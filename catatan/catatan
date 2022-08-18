@@ -1,0 +1,217 @@
+username : admin@admin.com/12345
+
+-- generate migration 
+php artisan generate:migrations
+php artisan generate:migrations --path=database/migrations
+php artisan generate:migrations --connection=mysql2
+php artisan generate:migrations --connection=mysql_sejati --path=database/migrations/dms --table=dms_sm_branch
+```
+You can also clear the directory with the `--empty-path` option:
+```bash
+php artisan generate:migrations --empty-path
+
+
+-- gui builder 
+http://localhost:8000/generator_builder
+-- generate scaffold, otomatis menjawab yes
+yes | php artisan infyom:scaffold AbsentReason --fromTable --tableName=absent_reasons --ignoreFields=created_at,updated_at,creaated_by,updated_by --skip=dump-autoload
+php artisan infyom:scaffold City --fromTable --tableName=cities --skip=dump-autoload,factory --env=development
+
+yes | php artisan infyom:scaffold Departement --fromTable --tableName=departements --ignoreFields=created_at,updated_at,deleted_at,created_by,updated_by --skip=dump-autoload --prefix=master --env=development
+-- rollback
+php artisan infyom:rollback Departement scaffold --prefix=master
+
+yes | php artisan infyom:scaffold City --fromTable --tableName=cities --ignoreFields=created_at,updated_at,deleted_at,created_by,updated_by --skip=dump-autoload --prefix=master --env=development
+yes | php artisan infyom:scaffold Company --fromTable --tableName=companies --ignoreFields=created_at,updated_at,deleted_at,created_by,updated_by --skip=dump-autoload --prefix=master --env=development
+-- generate from files
+php artisan infyom:scaffold Employees --fieldsFile=Employees.json --skip=dump-autoload --prefix=hris --env=development
+
+-- generate tests from file schema json
+php artisan infyom.api:tests Employees --fieldsFile=Employees.json --skip=dump-autoload --prefix=hris
+-- debug 
+url?XDEBUG_SESSION_START=1
+
+-- generate all crud
+php artisan scaffold.all:generate filepath
+php artisan scaffold.all:generate --module=inventory --table=warehouse,stock_quant,stock_inventory,stock_picking_type,stock_picking
+
+php artisan scaffold.all:generate --module=base --table=trip --connection=mysql_sejati
+
+-- generate model 
+ php artisan infyom:model StockInventoryLine --fromTable --tableName=stock_inventory_line --skip=dump-autoload,migration --ignoreFields=created_at,updated_at,deleted_at,created_by,updated_by --prefix=inventory
+
+-- clear cache model
+php artisan modelCache:clear --model=App\\Models\\User
+
+-- jalankan tests file tertentu
+php artisan test --filter test_create_absent_reasons tests/Repositories/AbsentReasonsRepositoryTest.php --stop-on-failure
+php artisan test --testsuite=Repositories --stop-on-failure --verbose
+
+-- migrate rollback
+php artisan migrate:rollback --step=1 --env=testing
+
+-- migrate, with set database and path
+php artisan migrate --database=mysql_sejati --path=database/migrations/dms
+
+-- generate export 
+php artisan make:export CustomersExport
+
+-- artisan tinker, test faker
+$faker = Faker\Factory::create();
+=> Faker\Generator {#5679}
+>>> $faker->dateTime()
+
+
+
+
+
+        <div class="custom-file-container" data-upload-id="myUniqueUploadId">
+            <label
+                >Upload File
+                <a
+                    href="javascript:void(0)"
+                    class="custom-file-container__image-clear"
+                    title="Clear Image"
+                    >&times;</a
+                ></label
+            >
+
+            <label class="custom-file-container__custom-file">
+                <input
+                    type="file"
+                    class="custom-file-container__custom-file__custom-file-input"
+                    accept="*"
+                    multiple
+                    aria-label="Choose File"
+                />
+                <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+                <span
+                    class="custom-file-container__custom-file__custom-file-control"
+                ></span>
+            </label>
+            <div class="custom-file-container__image-preview"></div>
+        </div>
+
+-- datatable checkbox referensi
+https://jsfiddle.net/gyrocode/snqw56dw/
+-- datatable parent - child
+/* Formatting function for row details - modify as you need */
+function format ( d ) {
+    // `d` is the original data object for the row
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr>'+
+            '<td>Full name:</td>'+
+            '<td>'+d.name+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Extension number:</td>'+
+            '<td>'+d.extn+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Extra info:</td>'+
+            '<td>And any further details here (images etc)...</td>'+
+        '</tr>'+
+    '</table>';
+}
+ 
+$(document).ready(function() {
+    var table = $('#example').DataTable( {
+        "ajax": "../ajax/data/objects.txt",
+        "columns": [
+            {
+                "className":      'details-control',
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ''
+            },
+            { "data": "name" },
+            { "data": "position" },
+            { "data": "office" },
+            { "data": "salary" }
+        ],
+        "order": [[1, 'asc']]
+    } );
+     
+    // Add event listener for opening and closing details
+    $('#example tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    } );
+} );
+
+-- datatable summary footer
+$(document).ready(function() {
+    $('#tbl-attendance').dataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+ 
+            // converting to interger to find total
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+ 
+            // computing column Total of the complete result 
+            var monTotal = api
+                .column( 1 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+				
+	    var tueTotal = api
+                .column( 2 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+				
+            var wedTotal = api
+                .column( 3 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+				
+	     var thuTotal = api
+                .column( 4 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+				
+	     var friTotal = api
+                .column( 5 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+			
+				
+            // Update footer by showing the total with the reference of the column index 
+	    $( api.column( 0 ).footer() ).html('Total');
+            $( api.column( 1 ).footer() ).html(monTotal);
+            $( api.column( 2 ).footer() ).html(tueTotal);
+            $( api.column( 3 ).footer() ).html(wedTotal);
+            $( api.column( 4 ).footer() ).html(thuTotal);
+            $( api.column( 5 ).footer() ).html(friTotal);
+        },
+        "processing": true,
+        "serverSide": true,
+        "ajax": "server.php"
+    } );
+} );
+</script>

@@ -1,0 +1,42 @@
+<?php
+
+namespace $NAMESPACE_MODEL$;
+
+use $NAMESPACE_MODEL_EXTEND$ as Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+$SOFT_DELETE_IMPORT$
+
+$DOCS$
+class $MODEL_NAME$ extends Model
+{
+    use HasFactory;
+// $SOFT_DELETE$
+    public $table = '$TABLE_NAME$';
+    $TIMESTAMPS$
+$SOFT_DELETE_DATES$
+$CONNECTION$
+$PRIMARY$
+    public $fillable = [
+        $FIELDS$
+    ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        $CAST$
+    ];
+
+    /**
+     * Validation rules
+     *
+     * @var array
+     */
+    public static $rules = [
+        $RULES$
+    ];
+
+    $RELATIONS$
+}

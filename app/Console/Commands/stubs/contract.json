@@ -1,0 +1,8 @@
+[   
+    {
+    "module":"hris",
+    "tables": [
+        "employees"
+    ]
+    }
+]

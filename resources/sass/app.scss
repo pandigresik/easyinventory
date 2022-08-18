@@ -1,0 +1,22 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+@import '~@coreui/coreui/dist/css/coreui.min.css';
+@import '~@coreui/icons/css/all.min.css';
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+@import '~font-awesome/scss/font-awesome';
+// select2
+@import '~select2/dist/css/select2.min.css';
+
+// bootstrap-daterangpicker
+@import "~bootstrap-daterangepicker";
+
+@import '~ladda/css/ladda';
+@import '~toastr/toastr';
+
+@import "~file-upload-with-preview/dist/file-upload-with-preview.min.css";
+@import "~simplebar";
+@import "styles.css"

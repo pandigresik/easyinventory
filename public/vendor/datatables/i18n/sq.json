@@ -1,0 +1,65 @@
+{
+    "emptyTable": "Nuk ka asnjë të dhënë në tabele",
+    "info": "Duke treguar _START_ deri _END_ prej _TOTAL_ reshtave",
+    "infoEmpty": "Duke treguar 0 deri 0 prej 0 reshtave",
+    "infoFiltered": "(të filtruara nga gjithësej _MAX_  reshtave)",
+    "infoThousands": ",",
+    "lengthMenu": "Shiko _MENU_ reshta",
+    "search": "Kërkoni:",
+    "zeroRecords": "Asnjë e dhënë nuk u gjet",
+    "paginate": {
+        "first": "E para",
+        "last": "E Fundit",
+        "next": "Tjetra",
+        "previous": "E Kaluara"
+    },
+    "aria": {
+        "sortAscending": ": aktivizo për të sortuar kolumnin me vlera në ngritje",
+        "sortDescending": ": aktivizo për të sortuar kolumnin me vlera në zbritje"
+    },
+    "autoFill": {
+        "cancel": "Anull",
+        "fill": "Ploteso",
+        "fillHorizontal": "Ploteso rrjeshtat",
+        "fillVertical": "Ploteso kolonat",
+        "info": "Info"
+    },
+    "buttons": {
+        "collection": "Te Dhenat",
+        "colvis": "Shfaq Kolonat",
+        "colvisRestore": "Rikthe Shfaqje",
+        "copy": "Kopjo",
+        "copyKeys": "Shtyp _ctr ose _⌘ + _C per te kopjuar te dhenat ne Clipboard. Per te Anulluar kliko mesazhin ose shtyp buton 'Escape'.",
+        "copyTitle": "Kopjo ne Clipboard",
+        "csv": "CSV",
+        "excel": "EXCEL",
+        "pdf": "PDF",
+        "print": "Printo"
+    },
+    "datetime": {
+        "amPm": [
+            "am",
+            "pm"
+        ],
+        "hours": "Ora",
+        "minutes": "Minuta",
+        "next": "perpara",
+        "previous": "prapa",
+        "seconds": "Sekonda",
+        "unknown": "unknown",
+        "weekdays": [
+            "Hene",
+            "Marte ",
+            "Merkure",
+            "Enjte",
+            "Premte",
+            "Shtune"
+        ]
+    },
+    "decimal": "dhjeteshifror",
+    "infoPostFix": "infoPostFix",
+    "loadingRecords": "Po merren te dhenat...",
+    "processing": "Po procesohen...",
+    "searchPlaceholder": "Shkruaj ç'po kerkon",
+    "thousands": ","
+}

@@ -1,0 +1,55 @@
+[
+    {
+    "module":"master",
+    "tables": [        
+        "cities",
+        "companies",
+        "company_costs",
+        "company_departments",        
+        "departements", 
+        "education_titles",
+        "educational_institutes",               
+        "job_levels",              
+        "job_titles",        
+        "menus",                       
+        "regions",          
+        "salary_components",
+        "salary_group_details",
+        "salary_groups",
+        "settings",
+        "shiftment_groups",
+        "shiftments",
+        "skill_groups",
+        "skills",
+        "tax_group_history",
+        "taxs"        
+    ]
+    },
+    {
+    "module":"hris",
+    "tables": [
+        "absent_reasons",
+        "activity_log",
+        "attendance_logfingers",
+        "attendance_summaries",
+        "attendances",
+        "career_histories",
+        "contracts",
+        "employees",        
+        "employee_shiftments",        
+        "fingerprint_devices",
+        "holidays",        
+        "job_mutations",
+        "job_placements",        
+        "leaves",              
+        "overtimes",
+        "payroll_details",
+        "payroll_periods",
+        "payrolls",        
+        "salary_allowances",
+        "salary_benefit_histories",
+        "salary_benefits",               
+        "workshifts"
+    ]
+    }
+]
