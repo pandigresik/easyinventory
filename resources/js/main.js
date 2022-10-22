@@ -323,7 +323,12 @@ class Main {
 
       if(!_option.autoApply){
          $(this).on('apply.daterangepicker', function(ev, picker) {
+            if(_option.singleDatePicker){
+              $(this).val(picker.startDate.format(_option.locale.format));
+            }else{
               $(this).val(picker.startDate.format(_option.locale.format) + ' - ' + picker.endDate.format(_option.locale.format));
+            }
+              
          });
 
          $(this).on('cancel.daterangepicker', function(ev, picker) {
@@ -363,8 +368,7 @@ class Main {
       if (_isAjax) {
         const _ini = $(this)
         const _url = _ini.data('url')
-        const _repository = _ini.data('repository')
-        const _filter = _ini.data('filter')
+        const _repository = _ini.data('repository')        
         if (_url === undefined) {
           console.log('url select2 ' + $(this).attr('name') + ' belum diset')
         } else {
@@ -378,7 +382,7 @@ class Main {
                 q: $.trim(params.term), // search term
                 page: params.page,
                 repository: _repository,
-                filter: _filter
+                filter: _ini.data('filter')
               }
             },
             processResults: function(data) {

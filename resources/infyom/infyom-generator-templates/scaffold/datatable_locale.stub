@@ -46,7 +46,7 @@ class $MODEL_NAME$DataTable extends DataTable
      */
     public function query($MODEL_NAME$ $model)
     {
-        return $model->newQuery();
+        return $model->select([$model->getTable().'.*'])->newQuery();
     }
 
     /**
