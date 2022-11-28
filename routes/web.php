@@ -36,6 +36,21 @@ Route::group(['middleware' => ['auth']], function () {
         Route::resource('menus', Base\MenusController::class, ["as" => 'base', 'middleware' => ['easyauth']]);
     });
 
+    Route::group(['prefix' => 'inventory'], function(){        
+        Route::resource('uomCategories', Inventory\UomCategoryController::class, ["as" => 'inventory'])->middleware(['easyauth']);
+        Route::resource('uoms', Inventory\UomController::class, ["as" => 'inventory'])->middleware(['easyauth']);
+        Route::resource('productCategories', Inventory\ProductCategoryController::class, ["as" => 'inventory'])->middleware(['easyauth']);
+        Route::resource('products', Inventory\ProductController::class, ["as" => 'inventory'])->middleware(['easyauth']);
+        Route::resource('warehouses', Inventory\WarehouseController::class, ["as" => 'inventory'])->middleware(['easyauth']);
+        Route::resource('storageLocations', Inventory\StorageLocationController::class, ["as" => 'inventory'])->middleware(['easyauth']);
+        Route::resource('stockMoveTypes', Inventory\StockMoveTypeController::class, ["as" => 'inventory'])->middleware(['easyauth']);
+        // Route::resource('stockMoves', Inventory\StockMoveController::class, ["as" => 'inventory']);
+        Route::resource('stockInMoves', Inventory\StockInMoveController::class, ["as" => 'inventory']);
+        Route::resource('stockOutMoves', Inventory\StockOutMoveController::class, ["as" => 'inventory']);
+        Route::resource('stockMoveLines', Inventory\StockMoveLineController::class, ["as" => 'inventory']);
+        Route::resource('stockAdjustments', Inventory\StockAdjustmentController::class, ["as" => 'inventory'])->middleware(['easyauth']);
+        Route::resource('stockAdjustmentLines', Inventory\StockAdjustmentLineController::class, ["as" => 'inventory']);
+    });
     Route::get('/selectAjax', [App\Http\Controllers\SelectAjaxController::class, 'index'])->name('selectAjax');
 //    Route::get('/events', [App\Http\Controllers\EventsController::class, 'index'])->name('events.index');
 });
@@ -52,7 +67,8 @@ Route::post(
 )->name('io_generator_builder_generate_from_file');
 
 Route::group(['prefix' => 'artisan'], function () {
-    Route::get('clear_cache', function(){
+    Route::get('clear_cache', function () {
         Artisan::call('cache:clear');
     });
 });
+

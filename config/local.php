@@ -4,6 +4,7 @@ return [
     'number' => [
         'integer' => ['alias' => 'numeric', 'digits' => 0, 'groupSeparator' => '.', 'radixPoint' => ',', 'autoGroup' => true],
         'decimal' => ['alias' => 'numeric', 'digits' => 2, 'groupSeparator' => '.', 'radixPoint' => ',', 'autoGroup' => true],
+        'decimal4' => ['alias' => 'numeric', 'digits' => 4, 'groupSeparator' => '.', 'radixPoint' => ',', 'autoGroup' => true],
         'currency' => ['alias' => 'currency','digits' => 2,'digitsOptional' => false, 'prefix' => 'Rp.', 'groupSeparator' => '.', 'radixPoint' => ','],
     ],
     'textmask' => [

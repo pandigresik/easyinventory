@@ -21,15 +21,15 @@ class UsersTableSeeder extends Seeder
         \DB::table('users')->insert(array (
             0 => 
             array (
-                'created_at' => '2021-10-26 22:21:17',
+                'created_at' => now(),
                 'deleted_at' => NULL,                
                 'email' => 'admin@admin.com',
-                'email_verified_at' => NULL,                
+                'email_verified_at' => now(),                
                 'id' => 1,
                 'name' => 'Administrator',
-                'password' => '$2y$10$Vi/M3mYzPevq1UG2m33ZZeO0oi8x2Vk/0Qihwd/hLBS4MrzGXe/nO',
+                'password' => Hash::make('admin@admin.com'),
                 'remember_token' => NULL,
-                'updated_at' => '2021-10-26 22:21:17',
+                'updated_at' => now(),
             )            
         ));
         

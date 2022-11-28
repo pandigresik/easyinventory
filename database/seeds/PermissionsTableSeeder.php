@@ -21,132 +21,132 @@ class PermissionsTableSeeder extends Seeder
         \DB::table('permissions')->insert(array (
             0 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 1,
-                'name' => 'menu-index',
+                'name' => 'menus-index',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             1 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 2,
-                'name' => 'menu-create',
+                'name' => 'menus-create',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             2 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 3,
-                'name' => 'menu-update',
+                'name' => 'menus-update',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             3 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 4,
-                'name' => 'menu-delete',
+                'name' => 'menus-delete',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             4 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 5,
-                'name' => 'user-index',
+                'name' => 'users-index',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             5 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 6,
-                'name' => 'user-create',
+                'name' => 'users-create',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             6 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 7,
-                'name' => 'user-update',
+                'name' => 'users-update',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             7 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 8,
-                'name' => 'user-delete',
+                'name' => 'users-delete',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             8 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 9,
-                'name' => 'role-index',
+                'name' => 'roles-index',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             9 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 10,
-                'name' => 'role-create',
+                'name' => 'roles-create',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             10 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 11,
-                'name' => 'role-update',
+                'name' => 'roles-update',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             11 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 12,
-                'name' => 'role-delete',
+                'name' => 'roles-delete',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             12 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 13,
-                'name' => 'permission-index',
+                'name' => 'permissions-index',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             13 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 14,
-                'name' => 'permission-create',
+                'name' => 'permissions-create',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             14 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 15,
-                'name' => 'permission-update',
+                'name' => 'permissions-update',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
             ),
             15 => 
             array (
-                'created_at' => NULL,
-                'guard_name' => 'web',
                 'id' => 16,
-                'name' => 'permission-delete',
+                'name' => 'permissions-delete',
+                'guard_name' => 'web',
+                'created_at' => NULL,
                 'updated_at' => NULL,
-            )
+            ),
         ));
         
         
