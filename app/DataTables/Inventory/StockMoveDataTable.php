@@ -9,6 +9,8 @@ use Yajra\DataTables\Html\Column;
 
 class StockMoveDataTable extends DataTable
 {
+    private $baseRoute;
+    private $moveType;
     /**
     * example mapping filter column to search by keyword, default use %keyword%
     */
@@ -35,7 +37,9 @@ class StockMoveDataTable extends DataTable
                 $dataTable->filterColumn($column, new $operator($columnSearch));                
             }
         }
-        return $dataTable->addColumn('action', 'inventory.stock_moves.datatables_actions');
+        return $dataTable->addColumn('action', function ($item){
+            return view('inventory.stock_moves.datatables_actions', ['id' => $item->id, 'baseRoute' => $this->getBaseRoute()]);
+        });
     }
 
     /**
@@ -46,7 +50,11 @@ class StockMoveDataTable extends DataTable
      */
     public function query(StockMove $model)
     {
-        return $model->select([$model->getTable().'.*'])->newQuery();
+        $moveType = $this->getMoveType();
+        if($moveType){
+            return $model->select([$model->getTable().'.*'])->where('stock_move_type', $moveType)->with(['warehouse'])->newQuery();    
+        }
+        return $model->select([$model->getTable().'.*'])->with(['warehouse'])->newQuery();
     }
 
     /**
@@ -119,8 +127,8 @@ class StockMoveDataTable extends DataTable
             'number' => new Column(['title' => __('models/stockMoves.fields.number'),'name' => 'number', 'data' => 'number', 'searchable' => true, 'elmsearch' => 'text']),
             'references' => new Column(['title' => __('models/stockMoves.fields.references'),'name' => 'references', 'data' => 'references', 'searchable' => true, 'elmsearch' => 'text']),
             'responsbility' => new Column(['title' => __('models/stockMoves.fields.responsbility'),'name' => 'responsbility', 'data' => 'responsbility', 'searchable' => true, 'elmsearch' => 'text']),
-            'warehouse_id' => new Column(['title' => __('models/stockMoves.fields.warehouse_id'),'name' => 'warehouse_id', 'data' => 'warehouse_id', 'searchable' => true, 'elmsearch' => 'text']),
-            'stock_move_type_id' => new Column(['title' => __('models/stockMoves.fields.stock_move_type_id'),'name' => 'stock_move_type_id', 'data' => 'stock_move_type_id', 'searchable' => true, 'elmsearch' => 'text'])
+            'warehouse_id' => new Column(['title' => __('models/stockMoves.fields.warehouse_id'),'name' => 'warehouse_id', 'data' => 'warehouse.name', 'searchable' => true, 'elmsearch' => 'text']),
+            'stock_move_type' => new Column(['title' => __('models/stockMoves.fields.stock_move_type'),'name' => 'stock_move_type', 'data' => 'stock_move_type', 'searchable' => true, 'elmsearch' => 'text'])
         ];
     }
 
@@ -132,5 +140,45 @@ class StockMoveDataTable extends DataTable
     protected function filename()
     {
         return 'stock_moves_datatable_' . time();
+    }
+
+    /**
+     * Get the value of baseRoute
+     */ 
+    public function getBaseRoute()
+    {
+        return $this->baseRoute;
+    }
+
+    /**
+     * Set the value of baseRoute
+     *
+     * @return  self
+     */ 
+    public function setBaseRoute($baseRoute)
+    {
+        $this->baseRoute = $baseRoute;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of moveType
+     */ 
+    public function getMoveType()
+    {
+        return $this->moveType;
+    }
+
+    /**
+     * Set the value of moveType
+     *
+     * @return  self
+     */ 
+    public function setMoveType($moveType)
+    {
+        $this->moveType = $moveType;
+
+        return $this;
     }
 }

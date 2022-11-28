@@ -17,7 +17,7 @@ class CreateProducts extends Migration
             $table->bigIncrements('id');
             $table->string('code', 10)->unique();
             $table->string('name', 50);
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->unsignedBigInteger('product_category_id');
             $table->unsignedBigInteger('uom_id');
             $table->timestamps();

@@ -16,8 +16,7 @@ class CreateStockMoveTypes extends Migration
         Schema::create('stock_move_types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('code', 10)->unique();
-            $table->string('name', 50);
-            $table->tinyInteger('sign_value')->nullable()->default(1);
+            $table->string('name', 50);            
             $table->text('description');
             $table->timestamps();
             $table->softDeletes();   

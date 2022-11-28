@@ -20,12 +20,11 @@ class CreateStockMoves extends Migration
             $table->string('references',50)->nullable()->comment('fill PO number, SO number or else');
             $table->string('responsbility', 50)->nullable()->comment('external actor');
             $table->unsignedBigInteger('warehouse_id');
-            $table->unsignedBigInteger('stock_move_type_id');
+            $table->string('stock_move_type', 10);
             $table->timestamps();
             $table->softDeletes();
             $table->blameable();
-            $table->foreign('warehouse_id')->references('id')->on('warehouses')->delete('cascade');
-            $table->foreign('stock_move_type_id')->references('id')->on('stock_move_types')->delete('cascade');
+            $table->foreign('warehouse_id')->references('id')->on('warehouses')->delete('cascade');            
         });
     }
 

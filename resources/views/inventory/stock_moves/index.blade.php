@@ -15,10 +15,10 @@
                          <div class="card-header">
                              <i class="fa fa-align-justify"></i>
                              @lang('models/stockMoves.plural')
-                             <a class="pull-right" href="{{ route('inventory.stockMoves.create') }}"><i class="fa fa-plus-square fa-lg"></i></a>
+                             <a class="pull-right" href="{{ route($baseRoute.'.create') }}"><i class="fa fa-plus-square fa-lg"></i></a>
                          </div>
                          <div class="card-body">                             
-                             @include('inventory.stock_moves.table')                             
+                             @include($baseView.'.table')                             
                               <div class="pull-right mr-3">
                                      
                               </div>

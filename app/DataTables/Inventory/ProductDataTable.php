@@ -46,7 +46,9 @@ class ProductDataTable extends DataTable
      */
     public function query(Product $model)
     {
-        return $model->select([$model->getTable().'.*'])->newQuery();
+        return $model->select([$model->getTable().'.*'])
+            ->with(['productCategory', 'uom'])
+            ->newQuery();
     }
 
     /**
@@ -118,8 +120,8 @@ class ProductDataTable extends DataTable
             'code' => new Column(['title' => __('models/products.fields.code'),'name' => 'code', 'data' => 'code', 'searchable' => true, 'elmsearch' => 'text']),
             'name' => new Column(['title' => __('models/products.fields.name'),'name' => 'name', 'data' => 'name', 'searchable' => true, 'elmsearch' => 'text']),
             'description' => new Column(['title' => __('models/products.fields.description'),'name' => 'description', 'data' => 'description', 'searchable' => true, 'elmsearch' => 'text']),
-            'product_category_id' => new Column(['title' => __('models/products.fields.product_category_id'),'name' => 'product_category_id', 'data' => 'product_category_id', 'searchable' => true, 'elmsearch' => 'text']),
-            'uom_id' => new Column(['title' => __('models/products.fields.uom_id'),'name' => 'uom_id', 'data' => 'uom_id', 'searchable' => true, 'elmsearch' => 'text'])
+            'product_category_id' => new Column(['title' => __('models/products.fields.product_category_id'),'name' => 'product_category_id', 'data' => 'product_category.name', 'searchable' => true, 'elmsearch' => 'text']),
+            'uom_id' => new Column(['title' => __('models/products.fields.uom_id'),'name' => 'uom_id', 'data' => 'uom.name', 'searchable' => true, 'elmsearch' => 'text'])
         ];
     }
 

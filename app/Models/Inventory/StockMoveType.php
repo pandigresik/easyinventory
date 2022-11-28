@@ -46,7 +46,6 @@ class StockMoveType extends Model
     public $fillable = [
         'code',
         'name',
-        'sign_value',
         'description'
     ];
 
@@ -58,8 +57,7 @@ class StockMoveType extends Model
     protected $casts = [
         'id' => 'integer',
         'code' => 'string',
-        'name' => 'string',
-        'sign_value' => 'boolean',
+        'name' => 'string',        
         'description' => 'string'
     ];
 

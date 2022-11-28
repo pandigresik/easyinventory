@@ -15,10 +15,10 @@
 </div>
 
 <!-- Description Field -->
-<div class="form-group col-sm-12 col-lg-12">
+<div class="form-group row mb-3">
     {!! Form::label('description', __('models/storageLocations.fields.description').':', ['class' => 'col-md-3 col-form-label']) !!}
 <div class="col-md-9"> 
-    {!! Form::textarea('description', null, ['class' => 'form-control', 'required' => 'required']) !!}
+    {!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => 4]) !!}
 </div>
 </div>
 
@@ -34,6 +34,6 @@
 <div class="form-group row mb-3">
     {!! Form::label('parent_id', __('models/storageLocations.fields.parent_id').':', ['class' => 'col-md-3 col-form-label']) !!}
 <div class="col-md-9"> 
-    {!! Form::select('parent_id', $parentItems, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+    {!! Form::select('parent_id', $parentItems, null, ['class' => 'form-control select2']) !!}
 </div>
 </div>

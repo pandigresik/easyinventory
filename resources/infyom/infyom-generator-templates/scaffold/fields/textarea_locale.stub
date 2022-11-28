@@ -1,7 +1,7 @@
 <!-- $FIELD_NAME_TITLE$ Field -->
-<div class="form-group col-sm-12 col-lg-12">
+<div class="form-group row mb-3">
     {!! Form::label('$FIELD_NAME$', __('models/$MODEL_NAME_PLURAL_CAMEL$.fields.$FIELD_NAME$').':', ['class' => 'col-md-3 col-form-label']) !!}
 <div class="col-md-9"> 
-    {!! Form::textarea('$FIELD_NAME$', null, ['class' => 'form-control'$SIZE$, 'required' => 'required']) !!}
+    {!! Form::textarea('$FIELD_NAME$', null, ['class' => 'form-control'$SIZE$, 'rows' => 4, 'required' => 'required']) !!}
 </div>
 </div>

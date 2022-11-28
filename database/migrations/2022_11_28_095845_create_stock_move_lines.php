@@ -19,6 +19,7 @@ class CreateStockMoveLines extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('storage_location_id');
             $table->unsignedInteger('quantity');
+            $table->string('lot_number', 20)->nullable();
             $table->string('description', 80)->nullable();
             $table->timestamps();
             $table->softDeletes();

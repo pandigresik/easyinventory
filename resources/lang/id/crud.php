@@ -23,13 +23,7 @@ return [
     'state_active' => 'Aktif',
     'state_nonactive' => 'Non Aktif',    
     'option' => [
-        'vehicleGroup_placeholder' => 'Pilih group kendaraan',
-        'dmsInvVehicle_placeholder' => 'Pilih kendaraan',
-        'Vendor_placeholder' => 'Pilih vendor',
-        'city_placeholder_origin' => 'Pilih kota asal',
-        'city_placeholder_destination' => 'Pilih kota tujuan',
-        'product_categories_placeholder' => 'Pilih jenis produk',
-        'trip_placeholder' => 'Pilih Trip',
-        'dmsInvProduct_placeholder' => 'Pilih produk',
+        'product_placeholder' => 'Pilih product',
+        'location_placeholder' => 'Pilih lokasi'
     ]
 ];

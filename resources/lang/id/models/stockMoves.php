@@ -11,6 +11,6 @@ return array (
     'references' => 'References',
     'responsbility' => 'Responsbility',
     'warehouse_id' => 'Warehouse Id',
-    'stock_move_type_id' => 'Stock Move Type Id',
+    'stock_move_type' => 'Stock Move Type',
   ),
 );

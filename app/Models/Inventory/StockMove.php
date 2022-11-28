@@ -5,11 +5,12 @@ namespace App\Models\Inventory;
 use App\Models\Base as Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Alfa6661\AutoNumber\AutoNumberTrait;
 
 /**
  * @SWG\Definition(
  *      definition="StockMove",
- *      required={"transaction_date", "number", "warehouse_id", "stock_move_type_id"},
+ *      required={"transaction_date", "number", "warehouse_id", "stock_move_type"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -31,7 +32,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class StockMove extends Model
 {
     use HasFactory;
-        use SoftDeletes;
+    use SoftDeletes;
+    use AutoNumberTrait;
 
     public $table = 'stock_moves';
     
@@ -40,7 +42,7 @@ class StockMove extends Model
 
 
     protected $dates = ['deleted_at'];
-
+    protected $moveType = 'IN';
 
 
     public $fillable = [
@@ -49,7 +51,7 @@ class StockMove extends Model
         'references',
         'responsbility',
         'warehouse_id',
-        'stock_move_type_id'
+        'stock_move_type'
     ];
 
     /**
@@ -64,7 +66,7 @@ class StockMove extends Model
         'references' => 'string',
         'responsbility' => 'string',
         'warehouse_id' => 'integer',
-        'stock_move_type_id' => 'integer'
+        'stock_move_type' => 'string'
     ];
 
     /**
@@ -74,20 +76,24 @@ class StockMove extends Model
      */
     public static $rules = [
         'transaction_date' => 'required',
-        'number' => 'required|string|max:25',
+    //    'number' => 'required|string|max:25',
         'references' => 'nullable|string|max:50',
         'responsbility' => 'nullable|string|max:50',
         'warehouse_id' => 'required',
-        'stock_move_type_id' => 'required'
+    //    'stock_move_type_id' => 'required'
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function stockMoveType()
+    public function getAutoNumberOptions()
     {
-        return $this->belongsTo(\App\Models\Inventory\StockMoveType::class, 'stock_move_type_id');
-    }
+        return [
+            'number' => [
+                'format' => function () {
+                    return 'WH/'.$this->stock_move_type.'/'. date('Ymd') . '/?'; // autonumber format. '?' will be replaced with the generated number.
+                },
+                'length' => 5 // The number of digits in the autonumber
+            ]
+        ];
+    }    
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -103,5 +109,28 @@ class StockMove extends Model
     public function stockMoveLines()
     {
         return $this->hasMany(\App\Models\Inventory\StockMoveLine::class, 'stock_move_id');
+    }
+
+    public function getTransactionDateAttribute($value){
+        return localFormatDate($value);
+    }
+    /**
+     * Get the value of moveType
+     */ 
+    public function getMoveType()
+    {
+        return $this->moveType;
+    }
+
+    /**
+     * Set the value of moveType
+     *
+     * @return  self
+     */ 
+    public function setMoveType($moveType)
+    {
+        $this->moveType = $moveType;
+
+        return $this;
     }
 }

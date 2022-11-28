@@ -35,6 +35,7 @@ class StorageLocationDataTable extends DataTable
                 $dataTable->filterColumn($column, new $operator($columnSearch));                
             }
         }
+        
         return $dataTable->addColumn('action', 'inventory.storage_locations.datatables_actions');
     }
 
@@ -46,7 +47,9 @@ class StorageLocationDataTable extends DataTable
      */
     public function query(StorageLocation $model)
     {
-        return $model->select([$model->getTable().'.*'])->newQuery();
+        return $model->select([$model->getTable().'.*'])
+            ->with(['warehouse', 'parentNode'])
+            ->newQuery();
     }
 
     /**
@@ -118,8 +121,8 @@ class StorageLocationDataTable extends DataTable
             'code' => new Column(['title' => __('models/storageLocations.fields.code'),'name' => 'code', 'data' => 'code', 'searchable' => true, 'elmsearch' => 'text']),
             'name' => new Column(['title' => __('models/storageLocations.fields.name'),'name' => 'name', 'data' => 'name', 'searchable' => true, 'elmsearch' => 'text']),
             'description' => new Column(['title' => __('models/storageLocations.fields.description'),'name' => 'description', 'data' => 'description', 'searchable' => true, 'elmsearch' => 'text']),
-            'warehouse_id' => new Column(['title' => __('models/storageLocations.fields.warehouse_id'),'name' => 'warehouse_id', 'data' => 'warehouse_id', 'searchable' => true, 'elmsearch' => 'text']),
-            'parent_id' => new Column(['title' => __('models/storageLocations.fields.parent_id'),'name' => 'parent_id', 'data' => 'parent_id', 'searchable' => true, 'elmsearch' => 'text'])
+            'warehouse_id' => new Column(['title' => __('models/storageLocations.fields.warehouse_id'),'name' => 'warehouse_id', 'data' => 'warehouse.name', 'searchable' => true, 'elmsearch' => 'text']),
+            'parent_id' => new Column(['title' => __('models/storageLocations.fields.parent_id'),'name' => 'parent_id', 'data' => 'parent_node.name', 'defaultContent' => '-', 'searchable' => true, 'elmsearch' => 'text'])
         ];
     }
 

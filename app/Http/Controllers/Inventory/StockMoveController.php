@@ -11,6 +11,8 @@ use App\Repositories\Inventory\StockMoveTypeRepository;
 use App\Repositories\Inventory\WarehouseRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use App\Repositories\Inventory\ProductRepository;
+use App\Repositories\Inventory\StorageLocationRepository;
 use Response;
 use Exception;
 
@@ -18,7 +20,9 @@ class StockMoveController extends AppBaseController
 {
     /** @var  StockMoveRepository */
     protected $repository;
-
+    protected $baseView = 'inventory.stock_moves';
+    protected $baseRoute = 'inventory.stockMoves';
+    
     public function __construct()
     {
         $this->repository = StockMoveRepository::class;
@@ -32,7 +36,7 @@ class StockMoveController extends AppBaseController
      */
     public function index(StockMoveDataTable $stockMoveDataTable)
     {
-        return $stockMoveDataTable->render('inventory.stock_moves.index');
+        return $stockMoveDataTable->setMoveType($this->getRepositoryObj()->getMoveType())->setBaseRoute($this->baseRoute)->render($this->baseView.'.index', ['baseView' => $this->baseView, 'baseRoute' => $this->baseRoute]);
     }
 
     /**
@@ -42,7 +46,7 @@ class StockMoveController extends AppBaseController
      */
     public function create()
     {
-        return view('inventory.stock_moves.create')->with($this->getOptionItems());
+        return view($this->baseView.'.create')->with($this->getOptionItems());
     }
 
     /**
@@ -63,7 +67,7 @@ class StockMoveController extends AppBaseController
         
         Flash::success(__('messages.saved', ['model' => __('models/stockMoves.singular')]));
 
-        return redirect(route('inventory.stockMoves.index'));
+        return redirect(route($this->baseRoute.'.index'));
     }
 
     /**
@@ -80,10 +84,10 @@ class StockMoveController extends AppBaseController
         if (empty($stockMove)) {
             Flash::error(__('models/stockMoves.singular').' '.__('messages.not_found'));
 
-            return redirect(route('inventory.stockMoves.index'));
+            return redirect(route($this->baseRoute.'.index'));
         }
 
-        return view('inventory.stock_moves.show')->with('stockMove', $stockMove);
+        return view($this->baseView.'.show')->with('stockMove', $stockMove);
     }
 
     /**
@@ -100,10 +104,10 @@ class StockMoveController extends AppBaseController
         if (empty($stockMove)) {
             Flash::error(__('messages.not_found', ['model' => __('models/stockMoves.singular')]));
 
-            return redirect(route('inventory.stockMoves.index'));
+            return redirect(route($this->baseRoute.'.index'));
         }
         
-        return view('inventory.stock_moves.edit')->with('stockMove', $stockMove)->with($this->getOptionItems());
+        return view($this->baseView.'.edit')->with(['stockMove' => $stockMove, 'lines' => $stockMove->stockMoveLines])->with($this->getOptionItems());
     }
 
     /**
@@ -121,7 +125,7 @@ class StockMoveController extends AppBaseController
         if (empty($stockMove)) {
             Flash::error(__('messages.not_found', ['model' => __('models/stockMoves.singular')]));
 
-            return redirect(route('inventory.stockMoves.index'));
+            return redirect(route($this->baseRoute.'.index'));
         }
 
         $stockMove = $this->getRepositoryObj()->update($request->all(), $id);
@@ -131,7 +135,7 @@ class StockMoveController extends AppBaseController
 
         Flash::success(__('messages.updated', ['model' => __('models/stockMoves.singular')]));
 
-        return redirect(route('inventory.stockMoves.index'));
+        return redirect(route($this->baseRoute.'.index'));
     }
 
     /**
@@ -148,7 +152,7 @@ class StockMoveController extends AppBaseController
         if (empty($stockMove)) {
             Flash::error(__('messages.not_found', ['model' => __('models/stockMoves.singular')]));
 
-            return redirect(route('inventory.stockMoves.index'));
+            return redirect(route($this->baseRoute.'.index'));
         }
 
         $delete = $this->getRepositoryObj()->delete($id);
@@ -159,7 +163,7 @@ class StockMoveController extends AppBaseController
 
         Flash::success(__('messages.deleted', ['model' => __('models/stockMoves.singular')]));
 
-        return redirect(route('inventory.stockMoves.index'));
+        return redirect(route($this->baseRoute.'.index'));
     }
 
     /**
@@ -172,9 +176,15 @@ class StockMoveController extends AppBaseController
     private function getOptionItems(){        
         $stockMoveType = new StockMoveTypeRepository();
         $warehouse = new WarehouseRepository();
+        $product = new ProductRepository();
+        $location = new StorageLocationRepository();
         return [
             'stockMoveTypeItems' => ['' => __('crud.option.stockMoveType_placeholder')] + $stockMoveType->pluck(),
-            'warehouseItems' => ['' => __('crud.option.warehouse_placeholder')] + $warehouse->pluck()            
+            'warehouseItems' => ['' => __('crud.option.warehouse_placeholder')] + $warehouse->pluck(),
+            'productItems' => ['' => __('crud.option.product_placeholder')] + $product->pluck(),
+            'locationItems' => ['' => __('crud.option.location_placeholder')] + $location->pluck(),
+            'baseView' => $this->baseView,
+            'baseRoute' => $this->baseRoute
         ];
     }
 }

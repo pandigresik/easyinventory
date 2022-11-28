@@ -5,6 +5,7 @@ namespace App\Models\Inventory;
 use App\Models\Base as Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kalnoy\Nestedset\NodeTrait;
 
 /**
  * @SWG\Definition(
@@ -31,8 +32,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class StorageLocation extends Model
 {
     use HasFactory;
-        use SoftDeletes;
-
+    use SoftDeletes;
+    use NodeTrait;
     public $table = 'storage_locations';
     
     const CREATED_AT = 'created_at';
@@ -48,7 +49,9 @@ class StorageLocation extends Model
         'name',
         'description',
         'warehouse_id',
-        'parent_id'
+        'parent_id',
+        '_lft',
+        '_rgt'
     ];
 
     /**
@@ -73,7 +76,7 @@ class StorageLocation extends Model
     public static $rules = [
         'code' => 'required|string|max:10',
         'name' => 'required|string|max:50',
-        'description' => 'required|string',
+        // 'description' => 'required|string',
         'warehouse_id' => 'required',
         'parent_id' => 'nullable'
     ];
@@ -100,5 +103,10 @@ class StorageLocation extends Model
     public function stockMoveLines()
     {
         return $this->hasMany(\App\Models\Inventory\StockMoveLine::class, 'storage_location_id');
+    }
+
+    public function parentNode()
+    {
+        return $this->belongsTo(\App\Models\Inventory\StorageLocation::class, 'parent_id');
     }
 }

@@ -170,8 +170,10 @@ class StorageLocationController extends AppBaseController
      */
     private function getOptionItems(){        
         $warehouse = new WarehouseRepository();
+        $storageLocation = new StorageLocationRepository();
         return [
-            'warehouseItems' => ['' => __('crud.option.warehouse_placeholder')] + $warehouse->pluck()            
+            'warehouseItems' => ['' => __('crud.option.warehouse_placeholder')] + $warehouse->pluck(),
+            'parentItems' =>  ['' => __('crud.option.storageLocation_placeholder')] + $storageLocation->pluck(),
         ];
     }
 }

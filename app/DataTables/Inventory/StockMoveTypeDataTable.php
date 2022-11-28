@@ -117,7 +117,6 @@ class StockMoveTypeDataTable extends DataTable
         return [
             'code' => new Column(['title' => __('models/stockMoveTypes.fields.code'),'name' => 'code', 'data' => 'code', 'searchable' => true, 'elmsearch' => 'text']),
             'name' => new Column(['title' => __('models/stockMoveTypes.fields.name'),'name' => 'name', 'data' => 'name', 'searchable' => true, 'elmsearch' => 'text']),
-            'sign_value' => new Column(['title' => __('models/stockMoveTypes.fields.sign_value'),'name' => 'sign_value', 'data' => 'sign_value', 'searchable' => true, 'elmsearch' => 'text']),
             'description' => new Column(['title' => __('models/stockMoveTypes.fields.description'),'name' => 'description', 'data' => 'description', 'searchable' => true, 'elmsearch' => 'text'])
         ];
     }

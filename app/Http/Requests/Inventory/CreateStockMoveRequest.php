@@ -39,6 +39,7 @@ class CreateStockMoveRequest extends FormRequest
     */
     public function all($keys = null){
         $keys = (new StockMove)->fillable;
+        $keys = array_merge($keys, ['stock_move_line']);
         return parent::all($keys);
     }
 }

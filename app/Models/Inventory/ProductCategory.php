@@ -69,7 +69,7 @@ class ProductCategory extends Model
     public static $rules = [
         'code' => 'required|string|max:10',
         'name' => 'required|string|max:50',
-        'description' => 'required|string'
+        // 'description' => 'required|string'
     ];
 
     /**

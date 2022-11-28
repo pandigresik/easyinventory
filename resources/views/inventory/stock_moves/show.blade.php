@@ -4,7 +4,7 @@
      @push('breadcrumb')
         <ol class="breadcrumb  my-0 ms-2">
             <li class="breadcrumb-item">
-                <a href="{{ route('inventory.stockMoves.index') }}">@lang('models/stockMoves.singular')</a>
+                <a href="{{ route($baseRoute.'.index') }}">@lang('models/stockMoves.singular')</a>
             </li>
             <li class="breadcrumb-item active">@lang('crud.detail')</li>
         </ol>
@@ -17,10 +17,10 @@
                          <div class="card">
                              <div class="card-header">
                                  <strong>@lang('crud.detail')</strong>
-                                  <a href="{{ route('inventory.stockMoves.index') }}" class="btn btn-ghost-light">Back</a>
+                                  <a href="{{ route($baseRoute.'.index') }}" class="btn btn-ghost-light">Back</a>
                              </div>
                              <div class="card-body">
-                                 @include('inventory.stock_moves.show_fields')
+                                 @include($baseView.'.show_fields')
                              </div>
                          </div>
                      </div>

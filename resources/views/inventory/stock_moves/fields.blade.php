@@ -1,47 +1,94 @@
 <!-- Transaction Date Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('transaction_date', __('models/stockMoves.fields.transaction_date').':', ['class' => 'col-md-3 col-form-label']) !!}
-<div class="col-md-9"> 
-    {!! Form::text('transaction_date', null, ['class' => 'form-control datetime', 'required' => 'required' ,'data-optiondate' => json_encode( ['locale' => ['format' => config('local.date_format_javascript') ]]),'id'=>'transaction_date']) !!}
-</div>
+    {!! Form::label('transaction_date', __('models/stockMoves.fields.transaction_date').':', ['class' => 'col-md-3
+    col-form-label']) !!}
+    <div class="col-md-9">
+        {!! Form::text('transaction_date', null, ['class' => 'form-control datetime', 'required' => 'required'
+        ,'data-optiondate' => json_encode( ['locale' => ['format' => config('local.date_format_javascript')
+        ]]),'id'=>'transaction_date']) !!}
+    </div>
 </div>
 
+@if (isset($lines))
 <!-- Number Field -->
 <div class="form-group row mb-3">
     {!! Form::label('number', __('models/stockMoves.fields.number').':', ['class' => 'col-md-3 col-form-label']) !!}
-<div class="col-md-9"> 
-    {!! Form::text('number', null, ['class' => 'form-control','maxlength' => 25,'maxlength' => 25, 'required' => 'required']) !!}
+    <div class="col-md-9">
+        {!! Form::text('number', null, ['class' => 'form-control','maxlength' => 25,'readonly' => 'readonly', 'required' =>
+        'required']) !!}
+    </div>
 </div>
-</div>
+@endif
 
 <!-- References Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('references', __('models/stockMoves.fields.references').':', ['class' => 'col-md-3 col-form-label']) !!}
-<div class="col-md-9"> 
-    {!! Form::text('references', null, ['class' => 'form-control','maxlength' => 50,'maxlength' => 50, 'required' => 'required']) !!}
-</div>
+    {!! Form::label('references', __('models/stockMoves.fields.references').':', ['class' => 'col-md-3 col-form-label'])
+    !!}
+    <div class="col-md-9">
+        {!! Form::text('references', null, ['class' => 'form-control','maxlength' => 50,'maxlength' => 50, 'required' =>
+        'required']) !!}
+    </div>
 </div>
 
 <!-- Responsbility Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('responsbility', __('models/stockMoves.fields.responsbility').':', ['class' => 'col-md-3 col-form-label']) !!}
-<div class="col-md-9"> 
-    {!! Form::text('responsbility', null, ['class' => 'form-control','maxlength' => 50,'maxlength' => 50, 'required' => 'required']) !!}
-</div>
+    {!! Form::label('responsbility', __('models/stockMoves.fields.responsbility').':', ['class' => 'col-md-3
+    col-form-label']) !!}
+    <div class="col-md-9">
+        {!! Form::text('responsbility', null, ['class' => 'form-control','maxlength' => 50,'maxlength' => 50, 'required'
+        => 'required']) !!}
+    </div>
 </div>
 
 <!-- Warehouse Id Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('warehouse_id', __('models/stockMoves.fields.warehouse_id').':', ['class' => 'col-md-3 col-form-label']) !!}
-<div class="col-md-9"> 
-    {!! Form::select('warehouse_id', $warehouseItems, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+    {!! Form::label('warehouse_id', __('models/stockMoves.fields.warehouse_id').':', ['class' => 'col-md-3
+    col-form-label']) !!}
+    <div class="col-md-9">
+        {!! Form::select('warehouse_id', $warehouseItems, null, ['class' => 'form-control select2', 'required' =>
+        'required']) !!}
+    </div>
 </div>
+<div>
+    <table class="table table-bordered" id="table-stock-move-line">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Lot Number / Batch</th>
+                <th>Location</th>
+                <th>Quantity</th>
+                <th>Description</th>                
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(isset($lines))
+                @foreach ($lines as $index => $item)
+                    @include($baseView.'.item', ['item' => $item, 'lastIndex' => count($lines) == $index + 1 ? 1 : 0])    
+                @endforeach
+            @else
+                @include($baseView.'.item', ['item' => null, 'lastIndex' => 1])
+            @endif        
+        </tbody>        
+    </table>    
 </div>
 
-<!-- Stock Move Type Id Field -->
-<div class="form-group row mb-3">
-    {!! Form::label('stock_move_type_id', __('models/stockMoves.fields.stock_move_type_id').':', ['class' => 'col-md-3 col-form-label']) !!}
-<div class="col-md-9"> 
-    {!! Form::select('stock_move_type_id', $stockMoveTypeItems, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
-</div>
-</div>
+@push('scripts')
+    <script type="text/javascript">
+        $(function(){
+            $('#table-stock-move-line tbody').trigger('change')
+        })
+        function addRowSelect2(_elm){
+            const _tr = $(_elm).closest('tr')
+            _tr.find('select.select2').select2('destroy')
+            main.addRow($(_elm), reinitSelect2 )
+        }
+        function reinitSelect2(_newTr){
+            _newTr.find('.is-valid').removeClass('is-valid')
+            main.initSelect(_newTr.closest('tbody'))
+            _newTr.find('select,input').prop('required',1)
+            main.initInputmask(_newTr)
+        }
+                
+    </script>
+@endpush

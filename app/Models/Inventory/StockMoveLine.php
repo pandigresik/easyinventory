@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class StockMoveLine extends Model
 {
     use HasFactory;
-        use SoftDeletes;
+    use SoftDeletes;
 
     public $table = 'stock_move_lines';
     
@@ -48,6 +48,7 @@ class StockMoveLine extends Model
         'product_id',
         'storage_location_id',
         'quantity',
+        'lot_number',
         'description'
     ];
 
@@ -62,6 +63,7 @@ class StockMoveLine extends Model
         'product_id' => 'integer',
         'storage_location_id' => 'integer',
         'quantity' => 'integer',
+        'lot_number' => 'string',
         'description' => 'string'
     ];
 

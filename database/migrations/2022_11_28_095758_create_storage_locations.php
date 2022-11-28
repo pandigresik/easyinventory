@@ -20,6 +20,8 @@ class CreateStorageLocations extends Migration
             $table->text('description');
             $table->unsignedBigInteger('warehouse_id');
             $table->unsignedBigInteger('parent_id')->nullable();
+            $table->unsignedInteger('_lft');
+            $table->unsignedInteger('_rgt');
             $table->timestamps();
             $table->softDeletes();
             $table->blameable();
