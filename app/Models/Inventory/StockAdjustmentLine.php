@@ -99,4 +99,12 @@ class StockAdjustmentLine extends Model
     {
         return $this->belongsTo(\App\Models\Inventory\StorageLocation::class, 'storage_location_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function stockAdjustment()
+    {
+        return $this->belongsTo(\App\Models\Inventory\StockAdjustment::class, 'stock_adjustment_id');
+    }
 }

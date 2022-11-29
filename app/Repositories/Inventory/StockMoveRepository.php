@@ -17,7 +17,7 @@ use Exception;
 class StockMoveRepository extends BaseRepository
 {    
     protected $moveType = 'IN';
-    protected $factorValue = ['IN' => 1, 'OUT' => '-1', 'ADJUST_IN' => 1, 'ADJUST_OUT' => -1];
+    protected $factorValue = ['IN' => 1, 'OUT' => '-1', 'ADJ_IN' => 1, 'ADJ_OUT' => -1];
     /**
      * @var array
      */

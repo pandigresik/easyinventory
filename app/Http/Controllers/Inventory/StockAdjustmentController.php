@@ -10,6 +10,11 @@ use App\Repositories\Inventory\StockAdjustmentRepository;
 
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use App\Models\Inventory\StockAdjustmentLine;
+use App\Models\Inventory\StockProduct;
+use App\Repositories\Inventory\ProductRepository;
+use App\Repositories\Inventory\StorageLocationLeafRepository;
+use App\Repositories\Inventory\WarehouseRepository;
 use Response;
 use Exception;
 
@@ -41,7 +46,23 @@ class StockAdjustmentController extends AppBaseController
      */
     public function create()
     {
-        return view('inventory.stock_adjustments.create')->with($this->getOptionItems());
+        $stockAdjustmentLines = [];
+        $stocks = StockProduct::hasQuantity()->all();
+        if(!$stocks->isEmpty()){
+            foreach($stocks as $stock){
+                $stockAdjustmentLines[] = new StockAdjustmentLine([
+                    'product_id' => $stock->product_id,
+                    'storage_location_id' => $stock->storage_location_id,
+                    'count_quantity' => $stock->getRawOriginal('quantity'),
+                    'onhand_quantity' => $stock->getRawOriginal('quantity'),
+                    'description' => 'same as count system'                    
+                ]);
+            }
+        }
+        
+        return view('inventory.stock_adjustments.create')
+                ->with(['lines' => collect($stockAdjustmentLines)])
+                ->with($this->getOptionItems());
     }
 
     /**
@@ -102,7 +123,7 @@ class StockAdjustmentController extends AppBaseController
             return redirect(route('inventory.stockAdjustments.index'));
         }
         
-        return view('inventory.stock_adjustments.edit')->with('stockAdjustment', $stockAdjustment)->with($this->getOptionItems());
+        return view('inventory.stock_adjustments.edit')->with(['stockAdjustment' => $stockAdjustment, 'lines' => $stockAdjustment->stockAdjustmentLines])->with($this->getOptionItems());
     }
 
     /**
@@ -168,10 +189,14 @@ class StockAdjustmentController extends AppBaseController
      *
      * @return Response
      */
-    private function getOptionItems(){        
-        
-        return [
-                        
+    private function getOptionItems(){                
+        $warehouse = new WarehouseRepository();
+        $product = new ProductRepository();
+        $location = new StorageLocationLeafRepository();
+        return [            
+            'warehouseItems' => ['' => __('crud.option.warehouse_placeholder')] + $warehouse->pluck(),
+            'productItems' => ['' => __('crud.option.product_placeholder')] + $product->pluck(),
+            'locationItems' => ['' => __('crud.option.location_placeholder')] + $location->pluck(),            
         ];
     }
 }

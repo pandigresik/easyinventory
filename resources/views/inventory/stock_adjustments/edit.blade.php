@@ -22,17 +22,8 @@
                           </div>
                           <div class="card-body">                              
 
-                              @include('inventory.stock_adjustments.fields')
-
-                              
-                            </div>
-                          <div class="card-footer">
-                          <!-- Submit Field -->
-                            <div class="form-group col-sm-12">
-                                {!! Form::submit(__('crud.save'), ['class' => 'btn btn-primary']) !!}
-                                <a href="{{ route('inventory.stockAdjustments.index') }}" class="btn btn-default">@lang('crud.cancel')</a>
-                            </div>
-                          </div>                            
+                              @include('inventory.stock_adjustments.fields')                              
+                            </div>                                                      
                       </div>                    
                     {!! Form::close() !!}  
                     </div>                    

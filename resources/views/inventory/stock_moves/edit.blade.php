@@ -23,7 +23,6 @@
                           <div class="card-body">                              
 
                               @include($baseView.'.fields', ['lines' => $lines])
-
                               
                             </div>
                           <div class="card-footer">

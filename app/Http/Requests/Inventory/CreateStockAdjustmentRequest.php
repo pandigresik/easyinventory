@@ -39,6 +39,7 @@ class CreateStockAdjustmentRequest extends FormRequest
     */
     public function all($keys = null){
         $keys = (new StockAdjustment)->fillable;
+        $keys = array_merge($keys, ['stock_adjustment_line']);
         return parent::all($keys);
     }
 }

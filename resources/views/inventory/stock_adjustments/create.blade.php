@@ -28,7 +28,7 @@
                             <div class="card-footer">
                                 <!-- Submit Field -->
                                 <div class="form-group col-sm-12 mt-2">
-                                    {!! Form::submit(__('crud.save'), ['class' => 'btn btn-primary']) !!}
+                                    {!! Form::button(__('crud.save'), ['class' => 'btn btn-primary', 'onclick' => 'return validForm(this)']) !!}
                                     <a href="{{ route('inventory.stockAdjustments.index') }}" class="btn btn-default">@lang('crud.cancel')</a>
                                 </div>
                             </div>

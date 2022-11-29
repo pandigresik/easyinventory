@@ -95,4 +95,8 @@ class StockProduct extends Model
     {
         return $this->belongsTo(\App\Models\Inventory\StorageLocation::class, 'storage_location_id');
     }
+
+    protected function scopeHasQuantity($query){
+        return $query->where('quantity', '>', 0);
+    }
 }

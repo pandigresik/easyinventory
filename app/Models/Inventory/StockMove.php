@@ -88,7 +88,7 @@ class StockMove extends Model
         return [
             'number' => [
                 'format' => function () {
-                    return 'WH/'.$this->stock_move_type.'/'. date('Ymd') . '/?'; // autonumber format. '?' will be replaced with the generated number.
+                    return 'WH/'.$this->stock_move_type.'/'. date('Ym') . '/?'; // autonumber format. '?' will be replaced with the generated number.
                 },
                 'length' => 5 // The number of digits in the autonumber
             ]

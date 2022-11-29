@@ -17,10 +17,13 @@ class CreateStockAdjustments extends Migration
             $table->bigIncrements('id');
             $table->string('number', 25)->unique();
             $table->date('transaction_date');
+            $table->unsignedBigInteger('warehouse_id');
             $table->text('description');
             $table->timestamps();
             $table->softDeletes();
             $table->blameable();
+
+            $table->foreign('warehouse_id')->references('id')->on('warehouses')->delete('cascade'); 
         });
     }
 

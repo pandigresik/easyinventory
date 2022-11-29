@@ -15,6 +15,7 @@ class CreateStockAdjustmentLines extends Migration
     {
         Schema::create('stock_adjustment_lines', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('stock_adjustment_id');
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('storage_location_id');
             $table->unsignedInteger('count_quantity');
@@ -26,6 +27,7 @@ class CreateStockAdjustmentLines extends Migration
             $table->softDeletes();
             $table->blameable();
             
+            $table->foreign('stock_adjustment_id')->references('id')->on('stock_adjustments')->delete('cascade');
             $table->foreign('storage_location_id')->references('id')->on('storage_locations')->delete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->delete('cascade');
         });
