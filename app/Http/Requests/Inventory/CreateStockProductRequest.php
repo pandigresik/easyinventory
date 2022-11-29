@@ -4,11 +4,10 @@ namespace App\Http\Requests\Inventory;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Inventory\StockMoveType;
+use App\Models\Inventory\StockProduct;
 
-class UpdateStockMoveTypeRequest extends FormRequest
+class CreateStockProductRequest extends FormRequest
 {
-    private $excludeKeys = []; 
 
     /**
      * Determine if the user is authorized to make this request.
@@ -17,7 +16,7 @@ class UpdateStockMoveTypeRequest extends FormRequest
      */
     public function authorize()
     {
-        $permissionName = 'stock_move_types-update';
+        $permissionName = 'stock_products-create';
         return Auth::user()->can($permissionName);
     }
 
@@ -28,10 +27,7 @@ class UpdateStockMoveTypeRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = StockMoveType::$rules;
-        
-        $rules = $this->excludeKeys ? array_diff_key($rules, array_combine($this->excludeKeys, $this->excludeKeys)) : $rules;
-        return $rules;
+        return StockProduct::$rules;
     }
 
     /**
@@ -42,8 +38,7 @@ class UpdateStockMoveTypeRequest extends FormRequest
      * @return array
     */
     public function all($keys = null){
-        $keys = (new StockMoveType)->fillable;
-        $keys = $this->excludeKeys ? array_diff($keys, $this->excludeKeys) : $keys;
+        $keys = (new StockProduct)->fillable;
         return parent::all($keys);
     }
 }

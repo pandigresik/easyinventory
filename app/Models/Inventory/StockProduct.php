@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @SWG\Definition(
- *      definition="StockMoveLine",
- *      required={"stock_move_id", "product_id", "storage_location_id", "quantity"},
+ *      definition="StockProduct",
+ *      required={"product_id", "storage_location_id", "quantity"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -17,23 +17,31 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="code",
- *          description="code",
- *          type="string"
+ *          property="product_id",
+ *          description="product_id",
+ *          type="integer",
+ *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="name",
- *          description="name",
- *          type="string"
+ *          property="storage_location_id",
+ *          description="storage_location_id",
+ *          type="integer",
+ *          format="int32"
+ *      ),
+ *      @SWG\Property(
+ *          property="quantity",
+ *          description="quantity",
+ *          type="integer",
+ *          format="int32"
  *      )
  * )
  */
-class StockMoveLine extends Model
+class StockProduct extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+        use SoftDeletes;
 
-    public $table = 'stock_move_lines';
+    public $table = 'stock_products';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -44,13 +52,9 @@ class StockMoveLine extends Model
 
 
     public $fillable = [
-        'stock_move_id',
         'product_id',
         'storage_location_id',
-        'quantity',
-        'balance',
-        'lot_number',
-        'description'
+        'quantity'
     ];
 
     /**
@@ -60,12 +64,9 @@ class StockMoveLine extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'stock_move_id' => 'integer',
         'product_id' => 'integer',
         'storage_location_id' => 'integer',
-        'quantity' => 'integer',
-        'lot_number' => 'string',
-        'description' => 'string'
+        'quantity' => 'integer'
     ];
 
     /**
@@ -74,11 +75,9 @@ class StockMoveLine extends Model
      * @var array
      */
     public static $rules = [
-        'stock_move_id' => 'required',
         'product_id' => 'required',
         'storage_location_id' => 'required',
-        'quantity' => 'required|integer',
-        'description' => 'nullable|string|max:80'
+        'quantity' => 'required|integer'
     ];
 
     /**
@@ -87,14 +86,6 @@ class StockMoveLine extends Model
     public function product()
     {
         return $this->belongsTo(\App\Models\Inventory\Product::class, 'product_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function stockMove()
-    {
-        return $this->belongsTo(\App\Models\Inventory\StockMove::class, 'stock_move_id');
     }
 
     /**

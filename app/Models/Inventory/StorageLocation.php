@@ -109,4 +109,9 @@ class StorageLocation extends Model
     {
         return $this->belongsTo(\App\Models\Inventory\StorageLocation::class, 'parent_id');
     }
+
+    public function stockProducts()
+    {
+        return $this->hasMany(\App\Models\Inventory\StockProduct::class, 'storage_location_id');
+    }
 }

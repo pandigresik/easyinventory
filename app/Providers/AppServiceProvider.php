@@ -6,6 +6,7 @@ use App\Models\Base\Menus;
 use App\Observers\MenusObserver;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\ServiceProvider;
+use Jenssegers\Date\Date;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,8 +29,9 @@ class AppServiceProvider extends ServiceProvider
             $url->formatScheme('https');
         }
         // config(['app.locale' => 'id']);
-        // Carbon::setLocale('id');
+        // \Carbon\Carbon::setLocale('id');
         //if (env('APP_DEBUG')) {
+        
         \DB::listen(function ($query) {
             \File::append(
                 storage_path('/logs/query.log'),

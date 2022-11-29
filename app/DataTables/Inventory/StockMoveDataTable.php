@@ -4,6 +4,7 @@ namespace App\DataTables\Inventory;
 
 use App\Models\Inventory\StockMove;
 use App\DataTables\BaseDataTable as DataTable;
+use App\Models\Inventory\Warehouse;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Column;
 
@@ -15,7 +16,7 @@ class StockMoveDataTable extends DataTable
     * example mapping filter column to search by keyword, default use %keyword%
     */
     private $columnFilterOperator = [
-        //'name' => \App\DataTables\FilterClass\MatchKeyword::class,        
+        'warehouse_id' => \App\DataTables\FilterClass\MatchKeyword::class,        
     ];
     
     private $mapColumnSearch = [
@@ -74,12 +75,7 @@ class StockMoveDataTable extends DataTable
                        'extend' => 'export',
                        'className' => 'btn btn-default btn-sm no-corner',
                        'text' => '<i class="fa fa-download"></i> ' .__('auth.app.export').''
-                    ],
-                    [
-                       'extend' => 'import',
-                       'className' => 'btn btn-default btn-sm no-corner',
-                       'text' => '<i class="fa fa-upload"></i> ' .__('auth.app.import').''
-                    ],
+                    ],                    
                     [
                        'extend' => 'print',
                        'className' => 'btn btn-default btn-sm no-corner',
@@ -121,14 +117,23 @@ class StockMoveDataTable extends DataTable
      * @return array
      */
     protected function getColumns()
-    {
+    {           
+        $warehouseItem = convertArrayPairValueWithKey(Warehouse::pluck('name', 'id')->toArray());
+        if($this->moveType == 'IN'){
+            return [
+                'transaction_date' => new Column(['title' => __('models/stockMoves.fields.transaction_date'),'name' => 'transaction_date', 'data' => 'transaction_date', 'searchable' => true, 'elmsearch' => 'daterange']),
+                'number' => new Column(['title' => __('models/stockMoves.fields.number'),'name' => 'number', 'data' => 'number', 'searchable' => true, 'elmsearch' => 'text']),
+                'references' => new Column(['title' => __('models/stockMoves.fields.references'),'name' => 'references', 'data' => 'references', 'searchable' => true, 'elmsearch' => 'text']),
+                'responsbility' => new Column(['title' => __('models/stockMoves.fields.responsbility'),'name' => 'responsbility', 'data' => 'responsbility', 'searchable' => true, 'elmsearch' => 'text']),
+                'warehouse_id' => new Column(['title' => __('models/stockMoves.fields.warehouse_id'),'name' => 'warehouse_id', 'data' => 'warehouse.name', 'searchable' => true, 'elmsearch' => 'dropdown', 'listItem' => $warehouseItem, 'multiple' => 'multiple']),            
+            ];    
+        }
         return [
-            'transaction_date' => new Column(['title' => __('models/stockMoves.fields.transaction_date'),'name' => 'transaction_date', 'data' => 'transaction_date', 'searchable' => true, 'elmsearch' => 'text']),
-            'number' => new Column(['title' => __('models/stockMoves.fields.number'),'name' => 'number', 'data' => 'number', 'searchable' => true, 'elmsearch' => 'text']),
+            'transaction_date' => new Column(['title' => __('models/stockMoves.fields.transaction_date'),'name' => 'transaction_date', 'data' => 'transaction_date', 'searchable' => true, 'elmsearch' => 'daterange']),            
             'references' => new Column(['title' => __('models/stockMoves.fields.references'),'name' => 'references', 'data' => 'references', 'searchable' => true, 'elmsearch' => 'text']),
             'responsbility' => new Column(['title' => __('models/stockMoves.fields.responsbility'),'name' => 'responsbility', 'data' => 'responsbility', 'searchable' => true, 'elmsearch' => 'text']),
-            'warehouse_id' => new Column(['title' => __('models/stockMoves.fields.warehouse_id'),'name' => 'warehouse_id', 'data' => 'warehouse.name', 'searchable' => true, 'elmsearch' => 'text']),
-            'stock_move_type' => new Column(['title' => __('models/stockMoves.fields.stock_move_type'),'name' => 'stock_move_type', 'data' => 'stock_move_type', 'searchable' => true, 'elmsearch' => 'text'])
+            'warehouse_id' => new Column(['title' => __('models/stockMoves.fields.warehouse_id'),'name' => 'warehouse_id', 'data' => 'warehouse.name', 'searchable' => true, 'elmsearch' => 'dropdown', 'listItem' => $warehouseItem, 'multiple' => 'multiple']),
+        //    'stock_move_type' => new Column(['title' => __('models/stockMoves.fields.stock_move_type'),'name' => 'stock_move_type', 'data' => 'stock_move_type', 'searchable' => true, 'elmsearch' => 'text'])
         ];
     }
 

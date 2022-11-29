@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\BlameableCustomTrait;
 use App\Traits\SearchModelTrait;
 use App\Traits\ShowColumnOptionTrait;
+use DateTimeInterface;
 use DigitalCloud\Blameable\Traits\Blameable;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Model;
@@ -57,5 +58,18 @@ class Base extends Model
     public function updatedBy()
     {
         return $this->belongsTo(\App\Models\Base\User::class, static::UPDATED_BY);
+    }
+
+    public function getCreatedAtAttribute($value){        
+        return localFormatDateTime($value);
+    }
+
+    public function getUpdatedAtAttribute($value){
+        return localFormatDateTime($value);
+    }
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
     }
 }

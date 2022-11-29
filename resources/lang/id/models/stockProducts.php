@@ -1,16 +1,13 @@
 <?php
 
 return array (
-  'singular' => 'StockMoveLine',
-  'plural' => 'StockMoveLines',
+  'singular' => 'StockProduct',
+  'plural' => 'StockProducts',
   'fields' => 
   array (
     'id' => 'Id',
-    'stock_move_id' => 'Stock Move Id',
     'product_id' => 'Product Id',
     'storage_location_id' => 'Storage Location Id',
     'quantity' => 'Quantity',
-    'description' => 'Description',
-    'created_at' => 'Created At'
   ),
 );

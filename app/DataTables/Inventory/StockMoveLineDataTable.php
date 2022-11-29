@@ -4,16 +4,23 @@ namespace App\DataTables\Inventory;
 
 use App\Models\Inventory\StockMoveLine;
 use App\DataTables\BaseDataTable as DataTable;
+use App\Models\Inventory\StorageLocation;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Column;
 
 class StockMoveLineDataTable extends DataTable
 {
+    private $productId;
+    private $storageLocationId;
+    protected $skipPaging = true;
     /**
     * example mapping filter column to search by keyword, default use %keyword%
     */
     private $columnFilterOperator = [
-        //'name' => \App\DataTables\FilterClass\MatchKeyword::class,        
+        'created_at' => \App\DataTables\FilterClass\BetweenDatetimeKeyword::class,
+        'stock_move.number' => \App\DataTables\FilterClass\RelationContainKeyword::class,
+        // 'product_id' => \App\DataTables\FilterClass\MatchKeyword::class,
+        'storage_location_id' => \App\DataTables\FilterClass\InKeyword::class,
     ];
     
     private $mapColumnSearch = [
@@ -35,7 +42,8 @@ class StockMoveLineDataTable extends DataTable
                 $dataTable->filterColumn($column, new $operator($columnSearch));                
             }
         }
-        return $dataTable->addColumn('action', 'inventory.stock_move_lines.datatables_actions');
+        return $dataTable;
+        // return $dataTable->addColumn('action', 'inventory.stock_move_lines.datatables_actions');
     }
 
     /**
@@ -46,7 +54,9 @@ class StockMoveLineDataTable extends DataTable
      */
     public function query(StockMoveLine $model)
     {
-        return $model->select([$model->getTable().'.*'])->newQuery();
+        return $model->select([$model->getTable().'.*'])
+            ->with(['product', 'storageLocation', 'stockMove'])
+            ->where(['product_id' => $this->getProductId(), 'storage_location_id' => $this->getStorageLocationId()])->newQuery();
     }
 
     /**
@@ -56,22 +66,12 @@ class StockMoveLineDataTable extends DataTable
      */
     public function html()
     {
-        $buttons = [
-                    [
-                       'extend' => 'create',
-                       'className' => 'btn btn-default btn-sm no-corner',
-                       'text' => '<i class="fa fa-plus"></i> ' .__('auth.app.create').''
-                    ],
+        $buttons = [                    
                     [
                        'extend' => 'export',
                        'className' => 'btn btn-default btn-sm no-corner',
                        'text' => '<i class="fa fa-download"></i> ' .__('auth.app.export').''
-                    ],
-                    [
-                       'extend' => 'import',
-                       'className' => 'btn btn-default btn-sm no-corner',
-                       'text' => '<i class="fa fa-upload"></i> ' .__('auth.app.import').''
-                    ],
+                    ],                    
                     [
                        'extend' => 'print',
                        'className' => 'btn btn-default btn-sm no-corner',
@@ -92,7 +92,7 @@ class StockMoveLineDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['width' => '120px', 'printable' => false, 'title' => __('crud.action')])
+            // ->addAction(['width' => '120px', 'printable' => false, 'title' => __('crud.action')])
             ->parameters([
                 'dom'       => '<"row" <"col-md-6"B><"col-md-6 text-end"l>>rtip',
                 'stateSave' => true,
@@ -114,12 +114,15 @@ class StockMoveLineDataTable extends DataTable
      */
     protected function getColumns()
     {
+        // $productItem = convertArrayPairValueWithKey(Product::pluck('name', 'id')->toArray());
+        $locationItem = convertArrayPairValueWithKey(StorageLocation::whereIsLeaf()->pluck('name', 'id')->toArray());
         return [
-            'stock_move_id' => new Column(['title' => __('models/stockMoveLines.fields.stock_move_id'),'name' => 'stock_move_id', 'data' => 'stock_move_id', 'searchable' => true, 'elmsearch' => 'text']),
-            'product_id' => new Column(['title' => __('models/stockMoveLines.fields.product_id'),'name' => 'product_id', 'data' => 'product_id', 'searchable' => true, 'elmsearch' => 'text']),
-            'storage_location_id' => new Column(['title' => __('models/stockMoveLines.fields.storage_location_id'),'name' => 'storage_location_id', 'data' => 'storage_location_id', 'searchable' => true, 'elmsearch' => 'text']),
-            'quantity' => new Column(['title' => __('models/stockMoveLines.fields.quantity'),'name' => 'quantity', 'data' => 'quantity', 'searchable' => true, 'elmsearch' => 'text']),
-            'description' => new Column(['title' => __('models/stockMoveLines.fields.description'),'name' => 'description', 'data' => 'description', 'searchable' => true, 'elmsearch' => 'text'])
+            'created_at' => new Column(['title' => __('models/stockMoveLines.fields.created_at'),'name' => 'created_at', 'data' => 'created_at', 'searchable' => true, 'elmsearch' => 'daterange']),
+        //    'product_id' => new Column(['title' => __('models/stockMoveLines.fields.product_id'),'name' => 'product_id', 'data' => 'product.name', 'searchable' => true, 'elmsearch' => 'dropdown', 'listItem' => $productItem, 'multiple' => 'multiple']),
+            'storage_location_id' => new Column(['title' => __('models/stockMoveLines.fields.storage_location_id'),'name' => 'storage_location_id', 'data' => 'storage_location.name', 'searchable' => true, 'elmsearch' => 'dropdown', 'listItem' => $locationItem, 'multiple' => 'multiple']),
+            'stock_move.number' => new Column(['title' => __('models/stockMoves.fields.number'),'name' => 'stock_move.number', 'data' => 'stock_move.number', 'searchable' => true, 'elmsearch' => 'daterange']),            
+            'balance' => new Column(['title' => __('models/stockMoveLines.fields.quantity'),'name' => 'balance', 'data' => 'balance', 'searchable' => false, 'elmsearch' => 'text']),
+            'description' => new Column(['title' => __('models/stockMoveLines.fields.description'),'name' => 'description', 'data' => 'description', 'searchable' => false, 'elmsearch' => 'text'])
         ];
     }
 
@@ -131,5 +134,45 @@ class StockMoveLineDataTable extends DataTable
     protected function filename()
     {
         return 'stock_move_lines_datatable_' . time();
+    }
+
+    /**
+     * Get the value of productId
+     */ 
+    public function getProductId()
+    {
+        return $this->productId;
+    }
+
+    /**
+     * Set the value of productId
+     *
+     * @return  self
+     */ 
+    public function setProductId($productId)
+    {
+        $this->productId = $productId;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of storageLocationId
+     */ 
+    public function getStorageLocationId()
+    {
+        return $this->storageLocationId;
+    }
+
+    /**
+     * Set the value of storageLocationId
+     *
+     * @return  self
+     */ 
+    public function setStorageLocationId($storageLocationId)
+    {
+        $this->storageLocationId = $storageLocationId;
+
+        return $this;
     }
 }

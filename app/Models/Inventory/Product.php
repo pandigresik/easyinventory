@@ -109,4 +109,9 @@ class Product extends Model
     {
         return $this->hasMany(\App\Models\Inventory\StockMoveLine::class, 'product_id');
     }
+
+    public function stockProducts()
+    {
+        return $this->hasMany(\App\Models\Inventory\StockProduct::class, 'product_id');
+    }
 }

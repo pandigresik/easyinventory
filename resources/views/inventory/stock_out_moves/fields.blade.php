@@ -53,8 +53,7 @@
     <table class="table table-bordered" id="table-stock-move-line">
         <thead>
             <tr>
-                <th>Product</th>
-                <th>Lot Number / Batch</th>
+                <th>Product</th>                
                 <th>Location</th>
                 <th>Quantity</th>
                 <th>Description</th>                

@@ -4,7 +4,7 @@
     @push('breadcrumb')
         <ol class="breadcrumb  my-0 ms-2">
           <li class="breadcrumb-item">
-             <a href="{!! route('inventory.stockMoveTypes.index') !!}">@lang('models/stockMoveTypes.singular')</a>
+             <a href="{!! route('inventory.stockProducts.index') !!}">@lang('models/stockProducts.singular')</a>
           </li>
           <li class="breadcrumb-item active">@lang('crud.edit')</li>
         </ol>
@@ -14,15 +14,15 @@
              @include('common.errors')
              <div class="row">
                  <div class="col-lg-12">
-                    {!! Form::model($stockMoveType, ['route' => ['inventory.stockMoveTypes.update', $stockMoveType->id], 'method' => 'patch']) !!}  
+                    {!! Form::model($stockProduct, ['route' => ['inventory.stockProducts.update', $stockProduct->id], 'method' => 'patch']) !!}  
                       <div class="card">                          
                           <div class="card-header">
                               <i class="fa fa-edit fa-lg"></i>
-                              <strong>Edit @lang('models/stockMoveTypes.singular')</strong>
+                              <strong>Edit @lang('models/stockProducts.singular')</strong>
                           </div>
                           <div class="card-body">                              
 
-                              @include('inventory.stock_move_types.fields')
+                              @include('inventory.stock_products.fields')
 
                               
                             </div>
@@ -30,7 +30,7 @@
                           <!-- Submit Field -->
                             <div class="form-group col-sm-12">
                                 {!! Form::submit(__('crud.save'), ['class' => 'btn btn-primary']) !!}
-                                <a href="{{ route('inventory.stockMoveTypes.index') }}" class="btn btn-default">@lang('crud.cancel')</a>
+                                <a href="{{ route('inventory.stockProducts.index') }}" class="btn btn-default">@lang('crud.cancel')</a>
                             </div>
                           </div>                            
                       </div>                    

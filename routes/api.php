@@ -24,11 +24,13 @@ Route::group(['prefix' => 'inventory'], function () {
     Route::resource('uoms', App\Http\Controllers\API\Inventory\UomAPIController::class);
     Route::resource('product_categories', App\Http\Controllers\API\Inventory\ProductCategoryAPIController::class);
     Route::resource('products', App\Http\Controllers\API\Inventory\ProductAPIController::class);
+    Route::resource('stock_products', App\Http\Controllers\API\Inventory\StockProductAPIController::class);
     Route::resource('warehouses', App\Http\Controllers\API\Inventory\WarehouseAPIController::class);
-    Route::resource('storage_locations', App\Http\Controllers\API\Inventory\StorageLocationAPIController::class);
-    Route::resource('stock_move_types', App\Http\Controllers\API\Inventory\StockMoveTypeAPIController::class);
+    Route::resource('storage_locations', App\Http\Controllers\API\Inventory\StorageLocationAPIController::class);    
     Route::resource('stock_moves', App\Http\Controllers\API\Inventory\StockMoveAPIController::class);
     Route::resource('stock_move_lines', App\Http\Controllers\API\Inventory\StockMoveLineAPIController::class);
     Route::resource('stock_adjustments', App\Http\Controllers\API\Inventory\StockAdjustmentAPIController::class);
     Route::resource('stock_adjustment_lines', App\Http\Controllers\API\Inventory\StockAdjustmentLineAPIController::class);
 });
+
+

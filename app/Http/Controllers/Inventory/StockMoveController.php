@@ -3,16 +3,14 @@
 namespace App\Http\Controllers\Inventory;
 
 use App\DataTables\Inventory\StockMoveDataTable;
-use App\Http\Requests\Inventory;
 use App\Http\Requests\Inventory\CreateStockMoveRequest;
 use App\Http\Requests\Inventory\UpdateStockMoveRequest;
 use App\Repositories\Inventory\StockMoveRepository;
-use App\Repositories\Inventory\StockMoveTypeRepository;
 use App\Repositories\Inventory\WarehouseRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\Inventory\ProductRepository;
-use App\Repositories\Inventory\StorageLocationRepository;
+use App\Repositories\Inventory\StorageLocationLeafRepository;
 use Response;
 use Exception;
 
@@ -173,13 +171,11 @@ class StockMoveController extends AppBaseController
      *
      * @return Response
      */
-    private function getOptionItems(){        
-        $stockMoveType = new StockMoveTypeRepository();
+    protected function getOptionItems(){        
         $warehouse = new WarehouseRepository();
         $product = new ProductRepository();
-        $location = new StorageLocationRepository();
-        return [
-            'stockMoveTypeItems' => ['' => __('crud.option.stockMoveType_placeholder')] + $stockMoveType->pluck(),
+        $location = new StorageLocationLeafRepository();
+        return [            
             'warehouseItems' => ['' => __('crud.option.warehouse_placeholder')] + $warehouse->pluck(),
             'productItems' => ['' => __('crud.option.product_placeholder')] + $product->pluck(),
             'locationItems' => ['' => __('crud.option.location_placeholder')] + $location->pluck(),

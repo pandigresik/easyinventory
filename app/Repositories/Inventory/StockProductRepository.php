@@ -2,25 +2,24 @@
 
 namespace App\Repositories\Inventory;
 
-use App\Models\Inventory\StockMoveType;
+use App\Models\Inventory\StockProduct;
 use App\Repositories\BaseRepository;
 
 /**
- * Class StockMoveTypeRepository
+ * Class StockProductRepository
  * @package App\Repositories\Inventory
- * @version November 28, 2022, 10:56 am WIB
+ * @version November 29, 2022, 8:40 am WIB
 */
 
-class StockMoveTypeRepository extends BaseRepository
+class StockProductRepository extends BaseRepository
 {
     /**
      * @var array
      */
     protected $fieldSearchable = [
-        'code',
-        'name',
-        'sign_value',
-        'description'
+        'product_id',
+        'storage_location_id',
+        'quantity'
     ];
 
     /**
@@ -38,6 +37,6 @@ class StockMoveTypeRepository extends BaseRepository
      **/
     public function model()
     {
-        return StockMoveType::class;
+        return StockProduct::class;
     }
 }

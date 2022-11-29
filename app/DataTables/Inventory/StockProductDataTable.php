@@ -2,21 +2,18 @@
 
 namespace App\DataTables\Inventory;
 
-use App\Models\Inventory\Product;
+use App\Models\Inventory\StockProduct;
 use App\DataTables\BaseDataTable as DataTable;
-use App\Models\Inventory\ProductCategory;
-use App\Models\Inventory\Uom;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Column;
 
-class ProductDataTable extends DataTable
+class StockProductDataTable extends DataTable
 {
     /**
     * example mapping filter column to search by keyword, default use %keyword%
     */
     private $columnFilterOperator = [
-        'product_category_id' => \App\DataTables\FilterClass\InKeyword::class,
-        'uom_id' => \App\DataTables\FilterClass\InKeyword::class,
+        //'name' => \App\DataTables\FilterClass\MatchKeyword::class,        
     ];
     
     private $mapColumnSearch = [
@@ -38,20 +35,18 @@ class ProductDataTable extends DataTable
                 $dataTable->filterColumn($column, new $operator($columnSearch));                
             }
         }
-        return $dataTable->addColumn('action', 'inventory.products.datatables_actions');
+        return $dataTable->addColumn('action', 'inventory.stock_products.datatables_actions');
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\Product $model
+     * @param \App\Models\StockProduct $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Product $model)
+    public function query(StockProduct $model)
     {
-        return $model->select([$model->getTable().'.*'])
-            ->with(['productCategory', 'uom'])
-            ->newQuery();
+        return $model->select([$model->getTable().'.*'])->with(['product', 'storageLocation'])->newQuery();
     }
 
     /**
@@ -118,15 +113,11 @@ class ProductDataTable extends DataTable
      * @return array
      */
     protected function getColumns()
-    {   
-        $categoryItem = convertArrayPairValueWithKey(ProductCategory::pluck('name', 'id')->toArray()); 
-        $uomItem = convertArrayPairValueWithKey(Uom::pluck('name', 'id')->toArray()); 
+    {
         return [
-            'code' => new Column(['title' => __('models/products.fields.code'),'name' => 'code', 'data' => 'code', 'searchable' => true, 'elmsearch' => 'text']),
-            'name' => new Column(['title' => __('models/products.fields.name'),'name' => 'name', 'data' => 'name', 'searchable' => true, 'elmsearch' => 'text']),
-            'description' => new Column(['title' => __('models/products.fields.description'),'name' => 'description', 'data' => 'description', 'searchable' => false, 'elmsearch' => 'text']),
-            'product_category_id' => new Column(['title' => __('models/products.fields.product_category_id'),'name' => 'product_category_id', 'data' => 'product_category.name', 'searchable' => true, 'elmsearch' => 'dropdown', 'listItem' => $categoryItem, 'multiple' => 'multiple']),
-            'uom_id' => new Column(['title' => __('models/products.fields.uom_id'),'name' => 'uom_id', 'data' => 'uom.name', 'searchable' => true, 'elmsearch' => 'dropdown', 'listItem' => $uomItem, 'multiple' => 'multiple'])
+            'product_id' => new Column(['title' => __('models/stockProducts.fields.product_id'),'name' => 'product_id', 'data' => 'product.name', 'searchable' => true, 'elmsearch' => 'text']),
+            'storage_location_id' => new Column(['title' => __('models/stockProducts.fields.storage_location_id'),'name' => 'storage_location_id', 'data' => 'storage_location.name', 'searchable' => true, 'elmsearch' => 'text']),
+            'quantity' => new Column(['title' => __('models/stockProducts.fields.quantity'),'name' => 'quantity', 'data' => 'quantity', 'searchable' => false, 'elmsearch' => 'text'])
         ];
     }
 
@@ -137,6 +128,6 @@ class ProductDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'products_datatable_' . time();
+        return 'stock_products_datatable_' . time();
     }
 }

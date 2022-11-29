@@ -1,10 +1,7 @@
 <tr>
     <td>
         {!! Form::select('stock_move_line[product_id][]', $productItems, $item->product_id ?? '' , ['class' => 'form-control select2', 'required' => 'required']) !!}
-    </td>
-    <td>
-        {!! Form::text('stock_move_line[lot_number][]', $item->lot_number ?? '' , ['class' => 'form-control', 'maxlength' => 20 ,'required' => 'required']) !!}
-    </td>        
+    </td>    
     <td>
         {!! Form::select('stock_move_line[storage_location_id][]', $locationItems, $item->storage_location_id ?? '', ['class' => 'form-control select2', 'required' =>
     'required']) !!}

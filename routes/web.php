@@ -41,13 +41,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::resource('uoms', Inventory\UomController::class, ["as" => 'inventory'])->middleware(['easyauth']);
         Route::resource('productCategories', Inventory\ProductCategoryController::class, ["as" => 'inventory'])->middleware(['easyauth']);
         Route::resource('products', Inventory\ProductController::class, ["as" => 'inventory'])->middleware(['easyauth']);
+        Route::resource('stockProducts', Inventory\StockProductController::class, ["as" => 'inventory'])->middleware(['easyauth']);
         Route::resource('warehouses', Inventory\WarehouseController::class, ["as" => 'inventory'])->middleware(['easyauth']);
-        Route::resource('storageLocations', Inventory\StorageLocationController::class, ["as" => 'inventory'])->middleware(['easyauth']);
-        Route::resource('stockMoveTypes', Inventory\StockMoveTypeController::class, ["as" => 'inventory'])->middleware(['easyauth']);
+        Route::resource('storageLocations', Inventory\StorageLocationController::class, ["as" => 'inventory'])->middleware(['easyauth']);        
         // Route::resource('stockMoves', Inventory\StockMoveController::class, ["as" => 'inventory']);
         Route::resource('stockInMoves', Inventory\StockInMoveController::class, ["as" => 'inventory']);
         Route::resource('stockOutMoves', Inventory\StockOutMoveController::class, ["as" => 'inventory']);
-        Route::resource('stockMoveLines', Inventory\StockMoveLineController::class, ["as" => 'inventory']);
+        // Route::resource('stockMoveLines', Inventory\StockMoveLineController::class, ["as" => 'inventory'])->only(['index']);
+        Route::get('stockMoveLines/{productId}/{storageLocationId}', [App\Http\Controllers\Inventory\StockMoveLineController::class, 'index'])->name('inventory.stockMoveLines.product');
         Route::resource('stockAdjustments', Inventory\StockAdjustmentController::class, ["as" => 'inventory'])->middleware(['easyauth']);
         Route::resource('stockAdjustmentLines', Inventory\StockAdjustmentLineController::class, ["as" => 'inventory']);
     });
@@ -71,4 +72,3 @@ Route::group(['prefix' => 'artisan'], function () {
         Artisan::call('cache:clear');
     });
 });
-

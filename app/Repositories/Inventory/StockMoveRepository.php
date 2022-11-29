@@ -2,8 +2,11 @@
 
 namespace App\Repositories\Inventory;
 
+use App\Models\Inventory\Product;
 use App\Models\Inventory\StockMove;
+use App\Models\Inventory\StockProduct;
 use App\Repositories\BaseRepository;
+use Exception;
 
 /**
  * Class StockMoveRepository
@@ -14,6 +17,7 @@ use App\Repositories\BaseRepository;
 class StockMoveRepository extends BaseRepository
 {    
     protected $moveType = 'IN';
+    protected $factorValue = ['IN' => 1, 'OUT' => '-1', 'ADJUST_IN' => 1, 'ADJUST_OUT' => -1];
     /**
      * @var array
      */
@@ -51,6 +55,11 @@ class StockMoveRepository extends BaseRepository
 
         try {
             $detail = $input['stock_move_line'];
+            if($this->moveType == 'OUT'){
+                // check stock product di storage location
+                $this->checkStockProduct($detail);
+            }
+            
             $model = $this->model->newInstance($input);
             $model->stock_move_type = $this->moveType;            
             $model->save();
@@ -72,9 +81,10 @@ class StockMoveRepository extends BaseRepository
 
         try {
             $detail = $input['stock_move_line'];
-            $input['stock_move_type'] = $this->moveType;
+            $input['stock_move_type'] = $this->moveType;            
             $model = parent::update($input, $id);
-            $this->setDetails($detail, $model);
+            $this->updateStockBeforeUpdate($model);
+            $this->setDetails($detail, $model, 'UPDATE');
             $this->model->getConnection()->commit();
 
             return $model;
@@ -86,18 +96,56 @@ class StockMoveRepository extends BaseRepository
         }
     }
 
-    private function setDetails($detail, $model)
-    {
+    private function setDetails($detail, $model, $operation = 'INSERT')
+    {        
         $model->stockMoveLines()->forceDelete();
         if (!empty($detail)) {
             foreach ($detail['product_id'] as $key => $item) {
+                $balance = $this->factorValue[$this->moveType] * ($detail['quantity'][$key] ?? 0);
+                $productId = $detail['product_id'][$key];
+                $storageLocationId = $detail['storage_location_id'][$key];
                 $model->stockMoveLines()->create([
-                    'product_id' => $detail['product_id'][$key] ?? null,
-                    'storage_location_id' => $detail['storage_location_id'][$key] ?? null,
+                    'product_id' => $productId,
+                    'storage_location_id' => $storageLocationId,
                     'description' => $detail['description'][$key] ?? null,
-                    'quantity' => $detail['quantity'][$key] ?? null,
+                    'quantity' => $detail['quantity'][$key] ?? 0,
+                    'balance' => $balance,
                     'lot_number' => $detail['lot_number'][$key] ?? null,
                 ]);
+
+                $stock = StockProduct::firstOrCreate(['product_id' => $productId, 'storage_location_id' => $storageLocationId]);
+                $stock->quantity += $balance;
+                $stock->save();
+                
+            }
+        }
+    }
+    private function updateStockBeforeUpdate($model){
+        $details = $model->stockMoveLines;
+        foreach($details as $item){            
+            $stock = StockProduct::where(['product_id' => $item->product_id, 'storage_location_id' => $item->storage_location_id])->first();
+            $stock->quantity += -1 * $stock->getRawOriginal('quantity');
+            $stock->save();
+        }
+    }
+    
+    private function checkStockProduct($detail){
+        foreach ($detail['product_id'] as $key => $item) {
+            $quantity = $detail['quantity'][$key] ?? 0;
+            $productId = $detail['product_id'][$key];
+            $storageLocationId = $detail['storage_location_id'][$key];
+
+            $stock = StockProduct::where(['product_id' => $productId, 'storage_location_id' => $storageLocationId])->first();
+            if($stock){
+                $stockQuantity = $stock->getRawOriginal('quantity');
+                if($stockQuantity < $quantity){
+                    $productName = $stock->product->name;
+                    throw new Exception('Stock product '.$productName.' di lokasi '.$stock->storageLocation->name.' ('.$stockQuantity.') lebih kecil dari '.$quantity);
+                }                
+            }else{
+                $product = Product::find($productId);
+                $productName = $product->name;
+                throw new Exception('Stock product '.$productName.' di lokasi '.$stock->storageLocation->name.' (0) lebih kecil dari '.$quantity);
             }
         }
     }
