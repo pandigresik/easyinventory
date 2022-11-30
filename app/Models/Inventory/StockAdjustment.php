@@ -77,11 +77,11 @@ class StockAdjustment extends Model
     ];
 
     /**
-     * Get all of the stockAdjusmentLines for the StockAdjustment
+     * Get all of the stockAdjustmentLines for the StockAdjustment
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function stockAdjusmentLines(): HasMany
+    public function stockAdjustmentLines(): HasMany
     {
         return $this->hasMany(StockAdjustmentLine::class, 'stock_adjustment_id');
     }
@@ -98,4 +98,7 @@ class StockAdjustment extends Model
         ];
     }
     
+    public function getTransactionDateAttribute($value){
+        return localFormatDate($value);
+    }
 }

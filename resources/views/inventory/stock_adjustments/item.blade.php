@@ -5,12 +5,9 @@
     <td>
         {!! Form::select('stock_adjustment_line[storage_location_id][]', $locationItems, $item->storage_location_id ?? '', ['class' => 'form-control select2', 'required' =>
     'required']) !!}
-    </td>
+    </td>    
     <td>
-        {!! Form::text('stock_adjustment_line[count_quantity][]', $item->count_quantity ?? '', ['class' => 'form-control inputmask', 'data-unmask' => 1, 'data-optionmask' => json_encode(config('local.number.integer')),'required' =>
-    'required']) !!}    
-    </td>
-    <td>
+        {!! Form::hidden('stock_adjustment_line[count_quantity][]', $item->count_quantity ?? '0', ['class' => 'form-control']) !!}
         {!! Form::text('stock_adjustment_line[onhand_quantity][]', $item->onhand_quantity ?? '', ['class' => 'form-control inputmask', 'data-unmask' => 1, 'data-optionmask' => json_encode(config('local.number.integer')),'required' =>
     'required']) !!}    
     </td>        
@@ -20,8 +17,6 @@
     <td>
         @if ($lastIndex)
             <button onclick="addRowSelect2(this)" type="button" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></button>
-        @else
-            <button onclick="main.removeRow(this)"  type="button" class="btn btn-primary btn-sm"><i class="fa fa-minus"></i></button>
-        @endif        
+        @endif
     </td>
 </tr>

@@ -44,16 +44,12 @@
     <table class="table table-bordered text-center" id="table-stock-adjustment-line">
         <thead>
             <tr class="align-middle">
-                <th rowspan="2">Product</th>
-                <th rowspan="2">Location</th>
-                <th colspan="2">Quantity</th>                  
-                <th rowspan="2">Keterangan</th>                
-                <th rowspan="2"></th>
-            </tr>
-            <tr>
-                <th>Count System</th>
-                <th>Onhand</th>
-            </tr>
+                <th>Product</th>
+                <th>Location</th>
+                <th>Quantity</th>                  
+                <th>Keterangan</th>                
+                <th></th>
+            </tr>            
         </thead>
         <tbody>
             @if(isset($lines))
@@ -69,6 +65,7 @@
 
 @push('scripts')
 <script type="text/javascript">
+    let _firstClickAddButton = false
     $(function () {
         $('#table-stock-adjustment-line tbody').trigger('change')
     })
@@ -76,12 +73,11 @@
     function validForm(_elm){
         const _tr = $('#table-stock-adjustment-line tbody>tr')        
         let _product_storage, _product_id, _location_id, _product_storage_registered = {}
-        let _valid = true, _count, _onhand
+        let _valid = true, _onhand
         _tr.each(function(index, item){            
             _product_id = $(item).find('select[name^="stock_adjustment_line[product_id]"]').val()
             _location_id = $(item).find('select[name^="stock_adjustment_line[storage_location_id]"]').val()
-            _product_storage = [_product_id,'__',_location_id]
-            _count = $(item).find('input[name^="stock_adjustment_line[count_quantity]"]').val()
+            _product_storage = [_product_id,'__',_location_id]            
             _onhand = $(item).find('input[name^="stock_adjustment_line[onhand_quantity]"]').val()
 
             if(_product_id == '' || _location_id == ''){
@@ -90,7 +86,7 @@
                 return _valid
             }
 
-            if(_count == '' || _onhand == ''){
+            if(_onhand == ''){
                 main.alertDialog('Warning', 'quantity onhand dan count pada baris '+(index + 1)+' harus diisi')
                 _valid = false
                 return _valid
@@ -105,8 +101,6 @@
                 _valid = false
                 return _valid
             }
-
-
         })
         if(_valid){
             $(_elm).closest('form').submit()
@@ -120,6 +114,10 @@
     }
 
     function reinitSelect2(_newTr) {
+        if(!_firstClickAddButton){
+            _newTr.prev('tr').find('td:last button').remove()
+            _firstClickAddButton = true
+        }
         _newTr.find('.is-valid').removeClass('is-valid')
         main.initSelect(_newTr.closest('tbody'))
         _newTr.find('select,input').prop('required', 1)

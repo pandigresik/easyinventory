@@ -21,8 +21,7 @@
                               <strong>Edit @lang('models/stockAdjustments.singular')</strong>
                           </div>
                           <div class="card-body">                              
-
-                              @include('inventory.stock_adjustments.fields')                              
+                              @include('inventory.stock_adjustments.fields', ['lines' => $lines])
                             </div>                                                      
                       </div>                    
                     {!! Form::close() !!}  

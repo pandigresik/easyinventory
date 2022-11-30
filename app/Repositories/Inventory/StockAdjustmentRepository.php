@@ -98,7 +98,12 @@ class StockAdjustmentRepository extends BaseRepository
             $moveLineIn = [];
             $moveLineOut = [];
             foreach ($detail['product_id'] as $key => $item) {
-                $onhandQty = $detail['onhand_quantity'][$key] ?? 0;
+                $onhandQty = 0;
+                if($detail['onhand_quantity'][$key]){
+                    if(empty($detail['onhand_quantity'][$key])){
+                        $onhandQty = 0;
+                    }
+                }
                 $qty = $detail['count_quantity'][$key] ?? 0;
                 $productId = $detail['product_id'][$key];
                 $storageLocationId = $detail['storage_location_id'][$key];
