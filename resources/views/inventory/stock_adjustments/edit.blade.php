@@ -18,7 +18,7 @@
                       <div class="card">                          
                           <div class="card-header">
                               <i class="fa fa-edit fa-lg"></i>
-                              <strong>Edit @lang('models/stockAdjustments.singular')</strong>
+                              <strong>Edit @lang('models/stockAdjustments.singular') {{ $warehouse->name }}</strong>                              
                           </div>
                           <div class="card-body">                              
                               @include('inventory.stock_adjustments.fields', ['lines' => $lines])

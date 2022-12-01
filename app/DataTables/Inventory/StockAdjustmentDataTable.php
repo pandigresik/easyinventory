@@ -4,6 +4,7 @@ namespace App\DataTables\Inventory;
 
 use App\Models\Inventory\StockAdjustment;
 use App\DataTables\BaseDataTable as DataTable;
+use App\Models\Inventory\Warehouse;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Column;
 
@@ -13,7 +14,7 @@ class StockAdjustmentDataTable extends DataTable
     * example mapping filter column to search by keyword, default use %keyword%
     */
     private $columnFilterOperator = [
-        //'name' => \App\DataTables\FilterClass\MatchKeyword::class,        
+        'warehouse_id' => \App\DataTables\FilterClass\InKeyword::class,
     ];
     
     private $mapColumnSearch = [
@@ -46,7 +47,7 @@ class StockAdjustmentDataTable extends DataTable
      */
     public function query(StockAdjustment $model)
     {
-        return $model->select([$model->getTable().'.*'])->newQuery();
+        return $model->select([$model->getTable().'.*'])->with(['warehouse'])->newQuery();
     }
 
     /**
@@ -56,22 +57,37 @@ class StockAdjustmentDataTable extends DataTable
      */
     public function html()
     {
-        $buttons = [
+        $buttonWarehouses = [];
+        $warehouse = Warehouse::get();
+        foreach($warehouse as $w){
+            $buttonWarehouses[] = [
+                'className' => 'btn btn-default btn-sm no-corner',
+                'text' => '<i class="fa cil-library-building"></i> '.$w->name,
+                'action' => <<<FUNC
+            function(e, dt, button, config){
+                window.location = window.location.href.replace(/\/+$/, '') + '/create?warehouse_id={$w->id}'
+            }
+FUNC
+        ];
+        }
+        
+        $buttons = [                    
                     [
-                       'extend' => 'create',
-                       'className' => 'btn btn-default btn-sm no-corner',
-                       'text' => '<i class="fa fa-plus"></i> ' .__('auth.app.create').''
+                        'extend' => 'collection',
+                        'className' => 'btn btn-default btn-sm no-corner',
+                        'text' => '<i class="fa fa-plus"></i> ' .__('auth.app.create').'',
+                        'buttons' => $buttonWarehouses            
                     ],
                     [
                        'extend' => 'export',
                        'className' => 'btn btn-default btn-sm no-corner',
                        'text' => '<i class="fa fa-download"></i> ' .__('auth.app.export').''
                     ],
-                    [
-                       'extend' => 'import',
-                       'className' => 'btn btn-default btn-sm no-corner',
-                       'text' => '<i class="fa fa-upload"></i> ' .__('auth.app.import').''
-                    ],
+                    // [
+                    //    'extend' => 'import',
+                    //    'className' => 'btn btn-default btn-sm no-corner',
+                    //    'text' => '<i class="fa fa-upload"></i> ' .__('auth.app.import').''
+                    // ],
                     [
                        'extend' => 'print',
                        'className' => 'btn btn-default btn-sm no-corner',
@@ -114,9 +130,11 @@ class StockAdjustmentDataTable extends DataTable
      */
     protected function getColumns()
     {
+        $warehouseItems = convertArrayPairValueWithKey(Warehouse::pluck('name', 'id')->toArray()); 
         return [
             'number' => new Column(['title' => __('models/stockAdjustments.fields.number'),'name' => 'number', 'data' => 'number', 'searchable' => true, 'elmsearch' => 'text']),
             'transaction_date' => new Column(['title' => __('models/stockAdjustments.fields.transaction_date'),'name' => 'transaction_date', 'data' => 'transaction_date', 'searchable' => true, 'elmsearch' => 'text']),
+            'warehouse_id' => new Column(['title' => __('models/stockAdjustments.fields.warehouse_id'),'name' => 'warehouse_id', 'data' => 'warehouse.name', 'searchable' => true, 'elmsearch' => 'dropdown', 'listItem' => $warehouseItems, 'multiple' => 'multiple']),
             'description' => new Column(['title' => __('models/stockAdjustments.fields.description'),'name' => 'description', 'data' => 'description', 'searchable' => true, 'elmsearch' => 'text'])
         ];
     }

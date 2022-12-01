@@ -42,7 +42,9 @@ class StockMoveLineDataTable extends DataTable
                 $dataTable->filterColumn($column, new $operator($columnSearch));                
             }
         }
-        return $dataTable;
+        return $dataTable->with('total_balance', function() use ($query){
+            return $query->sum('balance');
+        });
         // return $dataTable->addColumn('action', 'inventory.stock_move_lines.datatables_actions');
     }
 
@@ -94,16 +96,22 @@ class StockMoveLineDataTable extends DataTable
             ->minifiedAjax()
             // ->addAction(['width' => '120px', 'printable' => false, 'title' => __('crud.action')])
             ->parameters([
-                'dom'       => '<"row" <"col-md-6"B><"col-md-6 text-end"l>>rtip',
+                'dom'       => '<"row" <"col-md-6"B>>rti',
                 'stateSave' => true,
-                'order'     => [[0, 'desc']],
+                'order'     => [[0, 'asc']],
                 'buttons'   => $buttons,
                  'language' => [
                    'url' => url('vendor/datatables/i18n/en-gb.json'),
                  ],
                  'responsive' => true,
                  'fixedHeader' => true,
-                 'orderCellsTop' => true     
+                 'orderCellsTop' => true,
+                 'drawCallback' => <<<FUNC
+                 function(settings)
+                 {                   
+                    $('tfoot th#total_balance').html(settings.json.total_balance)
+                 }
+FUNC                  
             ]);
     }
 
@@ -120,8 +128,8 @@ class StockMoveLineDataTable extends DataTable
             'created_at' => new Column(['title' => __('models/stockMoveLines.fields.created_at'),'name' => 'created_at', 'data' => 'created_at', 'searchable' => true, 'elmsearch' => 'daterange']),
         //    'product_id' => new Column(['title' => __('models/stockMoveLines.fields.product_id'),'name' => 'product_id', 'data' => 'product.name', 'searchable' => true, 'elmsearch' => 'dropdown', 'listItem' => $productItem, 'multiple' => 'multiple']),
             'storage_location_id' => new Column(['title' => __('models/stockMoveLines.fields.storage_location_id'),'name' => 'storage_location_id', 'data' => 'storage_location.name', 'searchable' => true, 'elmsearch' => 'dropdown', 'listItem' => $locationItem, 'multiple' => 'multiple']),
-            'stock_move.number' => new Column(['title' => __('models/stockMoves.fields.number'),'name' => 'stock_move.number', 'data' => 'stock_move.number', 'searchable' => true, 'elmsearch' => 'daterange']),            
-            'balance' => new Column(['title' => __('models/stockMoveLines.fields.quantity'),'name' => 'balance', 'data' => 'balance', 'searchable' => false, 'elmsearch' => 'text']),
+            'stock_move.number' => new Column(['title' => __('models/stockMoves.fields.number'),'name' => 'stock_move.number', 'data' => 'stock_move.number', 'searchable' => true, 'elmsearch' => 'text', 'footer' => 'Stok Akhir']),            
+            'balance' => new Column(['title' => __('models/stockMoveLines.fields.quantity'),'name' => 'balance', 'data' => 'balance', 'searchable' => false, 'elmsearch' => 'text', 'className' => 'text-end', 'footer' => ['id' => 'total_balance']]),
             'description' => new Column(['title' => __('models/stockMoveLines.fields.description'),'name' => 'description', 'data' => 'description', 'searchable' => false, 'elmsearch' => 'text'])
         ];
     }

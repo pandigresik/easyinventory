@@ -76,7 +76,7 @@ class StockAdjustmentRepository extends BaseRepository
                 $onhandQty = $detail['onhand_quantity'][$key] ?? 0;
                 $productId = $detail['product_id'][$key];
                 $storageLocationId = $detail['storage_location_id'][$key];
-                $model->stockAdjusmentLines()->create([
+                $model->stockAdjustmentLines()->create([
                     'product_id' => $productId,
                     'storage_location_id' => $storageLocationId,
                     'description' => $detail['description'][$key] ?? null,
@@ -99,9 +99,11 @@ class StockAdjustmentRepository extends BaseRepository
             $moveLineOut = [];
             foreach ($detail['product_id'] as $key => $item) {
                 $onhandQty = 0;
-                if($detail['onhand_quantity'][$key]){
+                if($detail['onhand_quantity'][$key]){                    
                     if(empty($detail['onhand_quantity'][$key])){
                         $onhandQty = 0;
+                    }else{
+                        $onhandQty = $detail['onhand_quantity'][$key];
                     }
                 }
                 $qty = $detail['count_quantity'][$key] ?? 0;
@@ -124,7 +126,7 @@ class StockAdjustmentRepository extends BaseRepository
                         'storage_location_id' => $storageLocationId,
                         'description' => $detail['description'][$key] ?? null,
                         'quantity' => abs($diffQty),
-                        'balance' => -1 * $diffQty                        
+                        'balance' => $diffQty                        
                     ];
                 }                
             }

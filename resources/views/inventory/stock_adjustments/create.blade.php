@@ -18,7 +18,8 @@
                         <div class="card">
                             <div class="card-header">
                                 <i class="fa fa-plus-square-o fa-lg"></i>
-                                <strong>Create @lang('models/stockAdjustments.singular')</strong>
+                                <strong>Create @lang('models/stockAdjustments.singular') {{ $warehouse->name }}</strong>
+                                
                             </div>
                             <div class="card-body">                                
 

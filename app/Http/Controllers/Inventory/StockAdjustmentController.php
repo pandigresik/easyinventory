@@ -12,11 +12,13 @@ use Flash;
 use App\Http\Controllers\AppBaseController;
 use App\Models\Inventory\StockAdjustmentLine;
 use App\Models\Inventory\StockProduct;
+use App\Models\Inventory\Warehouse;
 use App\Repositories\Inventory\ProductRepository;
 use App\Repositories\Inventory\StorageLocationLeafRepository;
 use App\Repositories\Inventory\WarehouseRepository;
 use Response;
 use Exception;
+use Illuminate\Http\Request;
 
 class StockAdjustmentController extends AppBaseController
 {
@@ -44,8 +46,14 @@ class StockAdjustmentController extends AppBaseController
      *
      * @return Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $warehouse = Warehouse::find($request->get('warehouse_id'));
+        if (empty($warehouse)) {
+            Flash::error(__('messages.not_found', ['model' => __('models/warehouses.singular')]));
+
+            return redirect(route('inventory.stockAdjustments.index'));
+        }
         $stockAdjustmentLines = [];
         $stocks = StockProduct::hasQuantity()->all();
         if(!$stocks->isEmpty()){
@@ -61,7 +69,7 @@ class StockAdjustmentController extends AppBaseController
         }
         
         return view('inventory.stock_adjustments.create')
-                ->with(['lines' => collect($stockAdjustmentLines)])
+                ->with(['lines' => collect($stockAdjustmentLines), 'warehouse' => $warehouse])
                 ->with($this->getOptionItems());
     }
 
@@ -123,7 +131,7 @@ class StockAdjustmentController extends AppBaseController
             return redirect(route('inventory.stockAdjustments.index'));
         }
         
-        return view('inventory.stock_adjustments.edit')->with(['stockAdjustment' => $stockAdjustment, 'lines' => $stockAdjustment->stockAdjustmentLines])->with($this->getOptionItems());
+        return view('inventory.stock_adjustments.edit')->with(['stockAdjustment' => $stockAdjustment, 'warehouse' => $stockAdjustment->warehouse,'lines' => $stockAdjustment->stockAdjustmentLines])->with($this->getOptionItems());
     }
 
     /**

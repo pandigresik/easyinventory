@@ -7,6 +7,7 @@ use App\Models\Base as Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @SWG\Definition(
  *      definition="StockAdjustment",
@@ -84,6 +85,16 @@ class StockAdjustment extends Model
     public function stockAdjustmentLines(): HasMany
     {
         return $this->hasMany(StockAdjustmentLine::class, 'stock_adjustment_id');
+    }
+
+    /**
+     * Get the warehouse that owns the StockAdjustment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function warehouse(): BelongsTo
+    {
+        return $this->belongsTo(Warehouse::class, 'warehouse_id');
     }
 
     public function getAutoNumberOptions()

@@ -10,21 +10,12 @@
 </div>    
 @endif
 
-<!-- Warehouse Id Field -->
-<div class="form-group row mb-3">
-    {!! Form::label('warehouse_id', __('models/stockMoves.fields.warehouse_id').':', ['class' => 'col-md-3
-    col-form-label']) !!}
-    <div class="col-md-9">
-        {!! Form::select('warehouse_id', $warehouseItems, null, ['class' => 'form-control select2', 'required' =>
-        'required']) !!}
-    </div>
-</div>
-
 <!-- Transaction Date Field -->
 <div class="form-group row mb-3">
     {!! Form::label('transaction_date', __('models/stockAdjustments.fields.transaction_date').':', ['class' => 'col-md-3
     col-form-label']) !!}
     <div class="col-md-9">
+        {!! Form::hidden('warehouse_id', $warehouse->id, ['required' => 'required']) !!}
         {!! Form::text('transaction_date', null, ['class' => 'form-control datetime', 'required' => 'required'
         ,'data-optiondate' => json_encode( ['locale' => ['format' => config('local.date_format_javascript')
         ]]),'id'=>'transaction_date']) !!}
@@ -52,7 +43,7 @@
             </tr>            
         </thead>
         <tbody>
-            @if(isset($lines))
+            @if(!$lines->isEmpty())
                 @foreach ($lines as $index => $item)
                     @include('inventory.stock_adjustments.item', ['item' => $item, 'lastIndex' => count($lines) == $index + 1 ? 1 : 0])
                 @endforeach
