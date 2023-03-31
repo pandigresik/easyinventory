@@ -17,7 +17,8 @@ use Exception;
 class StockMoveRepository extends BaseRepository
 {    
     protected $moveType = 'IN';
-    protected $factorValue = ['IN' => 1, 'OUT' => '-1', 'ADJ_IN' => 1, 'ADJ_OUT' => -1];
+    protected $factorValue = ['IN' => 1, 'OUT' => '-1', 'ADJ_IN' => 1, 'ADJ_OUT' => -1, 'TR_IN' => 1, 'TR_OUT' => -1];
+    private $updateStockProduct = 1;
     /**
      * @var array
      */
@@ -55,15 +56,26 @@ class StockMoveRepository extends BaseRepository
 
         try {
             $detail = $input['stock_move_line'];
-            if($this->moveType == 'OUT'){
+            if(in_array($this->moveType,['OUT', 'TR_OUT'])){
                 // check stock product di storage location
                 $this->checkStockProduct($detail);
             }
             
             $model = $this->model->newInstance($input);
-            $model->stock_move_type = $this->moveType;            
+            $model->stock_move_type = $this->moveType;
             $model->save();
             $this->setDetails($detail, $model);
+
+            if(in_array($this->moveType,['TR_OUT'])){
+                // create references move document                
+                $this->updateStockProduct = 0;
+                $refModel = $this->model->newInstance($input);
+                $refModel->stock_move_type = 'TMP_'.$this->moveType;
+                $refModel->references = $model->number;
+                $refModel->warehouse_id = $input['warehouse_destination_id'];
+                $refModel->save();
+                $this->setDetails($detail, $refModel);  
+            }
             $this->model->getConnection()->commit();
 
             return $model;
@@ -85,6 +97,17 @@ class StockMoveRepository extends BaseRepository
             $model = parent::update($input, $id);
             $this->updateStockBeforeUpdate($model);
             $this->setDetails($detail, $model, 'UPDATE');
+
+            if(in_array($this->moveType,['TR_OUT'])){
+                // create references move document                
+                $this->updateStockProduct = 0;
+                $refModel = $this->model->newQuery()->where(['references' => $model->number, 'stock_move_type' => 'TMP_'.$this->moveType])->firstOrNew();
+                $refModel->warehouse_id = $input['warehouse_destination_id'];
+                $refModel->references = $model->number;
+                $refModel->save(); 
+                $this->setDetails($detail, $refModel);  
+            }
+
             $this->model->getConnection()->commit();
 
             return $model;
@@ -96,7 +119,7 @@ class StockMoveRepository extends BaseRepository
         }
     }
 
-    private function setDetails($detail, $model, $operation = 'INSERT')
+    protected function setDetails($detail, $model, $operation = 'INSERT')
     {        
         $model->stockMoveLines()->forceDelete();
         if (!empty($detail)) {
@@ -113,23 +136,24 @@ class StockMoveRepository extends BaseRepository
                     'lot_number' => $detail['lot_number'][$key] ?? null,
                 ]);
 
-                $stock = StockProduct::firstOrCreate(['product_id' => $productId, 'storage_location_id' => $storageLocationId]);
-                $stock->quantity += $balance;
-                $stock->save();
-                
+                if($this->updateStockProduct){
+                    $stock = StockProduct::firstOrCreate(['product_id' => $productId, 'storage_location_id' => $storageLocationId]);
+                    $stock->quantity += $balance;
+                    $stock->save();
+                }                
             }
         }
     }
-    private function updateStockBeforeUpdate($model){
+    protected function updateStockBeforeUpdate($model){
         $details = $model->stockMoveLines;
         foreach($details as $item){            
             $stock = StockProduct::where(['product_id' => $item->product_id, 'storage_location_id' => $item->storage_location_id])->first();
-            $stock->quantity += -1 * $stock->getRawOriginal('quantity');
-            $stock->save();
+            $stock->quantity += (-1 * $this->factorValue[$this->moveType] * $item->getRawOriginal('quantity'));
+            $stock->save();                        
         }
     }
     
-    private function checkStockProduct($detail){
+    protected function checkStockProduct($detail){
         foreach ($detail['product_id'] as $key => $item) {
             $quantity = $detail['quantity'][$key] ?? 0;
             $productId = $detail['product_id'][$key];

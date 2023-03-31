@@ -186,7 +186,7 @@ class ControllerGenerator extends BaseGenerator
                 $inputs = $relation->inputs;
                 $modelName = array_shift($inputs);                                
                 
-                if (!empty($relationShipText)) {                                        
+                if (!empty($relationShipText)) {
                     $fieldsArr[] = $field;                                        
                     $instanceModelName = \Str::camel($modelName);
                     $relations['REPOSITORY_REFERENCE_OPTION_ITEM'][] = 'use $NAMESPACE_REPOSITORY$\\'.\Str::singular($modelName).'Repository;';

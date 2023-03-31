@@ -9,7 +9,7 @@ return array (
     'code' => 'Code',
     'name' => 'Name',
     'description' => 'Description',
-    'warehouse_id' => 'Warehouse Id',
+    'warehouse_id' => 'Warehouse',
     'parent_id' => 'Parent Id',
   ),
 );

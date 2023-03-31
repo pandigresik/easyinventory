@@ -4,6 +4,7 @@ namespace App\DataTables\Inventory;
 
 use App\Models\Inventory\StockProduct;
 use App\DataTables\BaseDataTable as DataTable;
+use App\Models\Inventory\StorageLocation;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Column;
 
@@ -46,7 +47,9 @@ class StockProductDataTable extends DataTable
      */
     public function query(StockProduct $model)
     {
-        return $model->select([$model->getTable().'.*'])->with(['product', 'storageLocation'])->newQuery();
+        return $model->select([$model->getTable().'.*'])->with(['product', 'storageLocation' => function($q){
+            $q->with(['warehouse']);
+        }])->newQuery();
     }
 
     /**
@@ -114,9 +117,11 @@ class StockProductDataTable extends DataTable
      */
     protected function getColumns()
     {
+        $storageLocationItems = convertArrayPairValueWithKey((new StorageLocation())->pluckWithWarehouse());
         return [
             'product_id' => new Column(['title' => __('models/stockProducts.fields.product_id'),'name' => 'product_id', 'data' => 'product.name', 'searchable' => true, 'elmsearch' => 'text']),
-            'storage_location_id' => new Column(['title' => __('models/stockProducts.fields.storage_location_id'),'name' => 'storage_location_id', 'data' => 'storage_location.name', 'searchable' => true, 'elmsearch' => 'text']),
+            'warehouse_id' => new Column(['title' => __('models/storageLocations.fields.warehouse_id'),'name' => 'storage_location_id', 'data' => 'storage_location.warehouse.name', 'searchable' => true, 'elmsearch' => 'text']),
+            'storage_location_id' => new Column(['title' => __('models/stockProducts.fields.storage_location_id'),'name' => 'storage_location_id', 'data' => 'storage_location.name', 'searchable' => true, 'elmsearch' => 'dropdown', 'listItem' => $storageLocationItems, 'multiple' => 'multiple']),
             'quantity' => new Column(['title' => __('models/stockProducts.fields.quantity'),'name' => 'quantity', 'data' => 'quantity', 'searchable' => false, 'elmsearch' => 'text'])
         ];
     }

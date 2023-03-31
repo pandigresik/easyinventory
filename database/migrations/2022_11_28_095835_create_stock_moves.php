@@ -16,7 +16,7 @@ class CreateStockMoves extends Migration
         Schema::create('stock_moves', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->date('transaction_date');
-            $table->string('number', 25)->unique();
+            $table->string('number', 30)->unique();
             $table->string('references',50)->nullable()->comment('fill PO number, SO number or else');
             $table->string('responsbility', 50)->nullable()->comment('external actor');
             $table->unsignedBigInteger('warehouse_id');

@@ -46,9 +46,21 @@
     col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::select('warehouse_id', $warehouseItems, null, ['class' => 'form-control select2', 'required' =>
-        'required', 'onchange' => 'setStorageLocation(this)']) !!}
+        'required', 'onchange' => 'setDestinationWarehouse(this, \'#warehouse_destination_id\')']) !!}
     </div>
 </div>
+
+<!-- Warehouse Destination Id Field -->
+<div class="form-group row mb-3">
+    {!! Form::label('warehouse_destination_id', __('models/stockOutMoves.fields.warehouse_destination_id').':', ['class' => 'col-md-3
+    col-form-label']) !!}
+    <div class="col-md-9">
+        {!! Form::select('warehouse_destination_id', $warehouseDestinationItems, null, ['class' => 'form-control select2', 'required' =>
+        'required']) !!}
+    </div>
+</div>
+
+
 <div>
     <table class="table table-bordered" id="table-stock-move-line">
         <thead>
@@ -76,6 +88,9 @@
     <script type="text/javascript">
         $(function(){
             $('#table-stock-move-line tbody').trigger('change')
+            if(_.isEmpty($('#warehouse_destination_id').val())){
+                $('#warehouse_destination_id').prop('disabled', 1)
+            }
         })
         function addRowSelect2(_elm){
             const _tr = $(_elm).closest('tr')
@@ -89,13 +104,21 @@
             main.initInputmask(_newTr)
         }
 
-        function setStorageLocation(_elm){            
-            let _val = $(_elm).val()            
+        function setDestinationWarehouse(_elm, _target){
+            let _val = $(_elm).val()
+            $(_target).prop('disabled', 0)
             $('select[name^="stock_move_line[storage_location_id]"]').val('')
             $('select[name^="stock_move_line[storage_location_id]"]').find('optgroup').prop('disabled', 1)
             $('select[name^="stock_move_line[storage_location_id]"]').trigger('change')
-            
-            if(!_.isEmpty(_val)){                
+
+            if(_.isEmpty(_val)){
+                $(_target).prop('disabled', 1)
+                $(_target).val('')
+                $(_target).trigger('change')
+            }else{
+                $(_target).find('option').prop('disabled', 0)
+                $(_target).find('option[value='+_val+']').prop('disabled', 1)
+
                 $('select[name^="stock_move_line[storage_location_id]"]').find('optgroup[label="'+$(_elm).find('option:selected').text()+'"]').prop('disabled', 0)
             }
         }

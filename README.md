@@ -5,7 +5,7 @@ easyinventory adalah aplikasi berbasis web yang digunakan untuk memantau stock g
 
 ## Minimum Requirement
 
-- [x] PHP versi 7.4 atau 8.1 dan extension yang diperlukan selama instalasi menggunakan composer
+- [x] PHP 8.1 keatas dan extension yang diperlukan selama instalasi menggunakan composer
 - [x] Mysql Database minimal versi 8
 - [x] Web Server (Apache, Nginx atau IIS)
 
@@ -31,8 +31,7 @@ easyinventory adalah aplikasi berbasis web yang digunakan untuk memantau stock g
 ## Cara Install (Manual)
 
 - [x] Clone/Download repository `git clone https://github.com/pandigresik/easyinventory.git` dan pindah ke folder `easyinventory`
-- [x] Jalankan [Composer](https://getcomposer.org/download) Install/Update `composer install --ignore-platform-reqs` jika menggunakan php versi 8.1
-- [x] Jalankan [Composer](https://getcomposer.org/download) Install/Update `composer install` jika menggunakan php versi 7.4
+- [x] Jalankan [Composer](https://getcomposer.org/download) Install/Update `composer install --ignore-platform-reqs` jika menggunakan php versi 8.1 keatas
 - [x] Buat database misal easyinventory
 - [x] `composer run post-root-package-install` untuk generate file .env
 - [x] konfigurasi setting koneksi database pada file .env

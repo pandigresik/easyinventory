@@ -46,7 +46,7 @@
     col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::select('warehouse_id', $warehouseItems, null, ['class' => 'form-control select2', 'required' =>
-        'required']) !!}
+        'required', 'onchange' => 'setStorageLocation(this)']) !!}
     </div>
 </div>
 <div>
@@ -90,5 +90,15 @@
             main.initInputmask(_newTr)
         }
                 
+        function setStorageLocation(_elm){            
+            let _val = $(_elm).val()            
+            $('select[name^="stock_move_line[storage_location_id]"]').val('')
+            $('select[name^="stock_move_line[storage_location_id]"]').find('optgroup').prop('disabled', 1)
+            $('select[name^="stock_move_line[storage_location_id]"]').trigger('change')
+            
+            if(!_.isEmpty(_val)){                
+                $('select[name^="stock_move_line[storage_location_id]"]').find('optgroup[label="'+$(_elm).find('option:selected').text()+'"]').prop('disabled', 0)
+            }
+        }
     </script>
 @endpush

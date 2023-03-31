@@ -3,7 +3,7 @@
 @section('content')
     @push('breadcrumb')
     <ol class="breadcrumb  my-0 ms-2">
-        <li class="breadcrumb-item">@lang('models/stockOutMoves.plural')</li>
+        <li class="breadcrumb-item">@lang('models/stockMoves.plural')</li>
     </ol>
     @endpush
     <div class="container-fluid">
@@ -14,7 +14,7 @@
                      <div class="card">
                          <div class="card-header">
                              <i class="fa fa-align-justify"></i>
-                             @lang('models/stockOutMoves.plural')
+                             @lang('models/stockMoves.plural')
                              <a class="pull-right" href="{{ route($baseRoute.'.create') }}"><i class="fa fa-plus-square fa-lg"></i></a>
                          </div>
                          <div class="card-body">                             

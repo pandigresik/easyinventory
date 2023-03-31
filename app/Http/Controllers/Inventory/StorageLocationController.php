@@ -173,7 +173,10 @@ class StorageLocationController extends AppBaseController
         $storageLocation = new StorageLocationRepository();
         return [
             'warehouseItems' => ['' => __('crud.option.warehouse_placeholder')] + $warehouse->pluck(),
-            'parentItems' =>  ['' => __('crud.option.storageLocation_placeholder')] + $storageLocation->pluck(),
+            'parentItems' =>  ['' => __('crud.option.storageLocation_placeholder')] + $storageLocation->allQuery()->with(['warehouse'])->get()
+                ->groupBy('warehouse.name')->map(function($item){
+                    return $item->pluck('name', 'id');
+            })->toArray(),
         ];
     }
 }

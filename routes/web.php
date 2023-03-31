@@ -47,6 +47,9 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::resource('stockMoves', Inventory\StockMoveController::class, ["as" => 'inventory']);
         Route::resource('stockInMoves', Inventory\StockInMoveController::class, ["as" => 'inventory']);
         Route::resource('stockOutMoves', Inventory\StockOutMoveController::class, ["as" => 'inventory']);
+        Route::resource('transferInWHController', Inventory\TransferInWHController::class, ["as" => 'inventory']);
+        Route::resource('transferOutWHController', Inventory\TransferOutWHController::class, ["as" => 'inventory']);
+        
         // Route::resource('stockMoveLines', Inventory\StockMoveLineController::class, ["as" => 'inventory'])->only(['index']);
         Route::get('stockMoveLines/{productId}/{storageLocationId}', [App\Http\Controllers\Inventory\StockMoveLineController::class, 'index'])->name('inventory.stockMoveLines.product');
         Route::resource('stockAdjustments', Inventory\StockAdjustmentController::class, ["as" => 'inventory'])->middleware(['easyauth']);
@@ -57,15 +60,15 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 // builder generator
-Route::get('generator_builder', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@builder')->name('io_generator_builder');
-Route::get('field_template', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@fieldTemplate')->name('io_field_template');
-Route::get('relation_field_template', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@relationFieldTemplate')->name('io_relation_field_template');
-Route::post('generator_builder/generate', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@generate')->name('io_generator_builder_generate');
-Route::post('generator_builder/rollback', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@rollback')->name('io_generator_builder_rollback'); 
-Route::post(
-    'generator_builder/generate-from-file',
-    '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@generateFromFile'
-)->name('io_generator_builder_generate_from_file');
+// Route::get('generator_builder', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@builder')->name('io_generator_builder');
+// Route::get('field_template', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@fieldTemplate')->name('io_field_template');
+// Route::get('relation_field_template', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@relationFieldTemplate')->name('io_relation_field_template');
+// Route::post('generator_builder/generate', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@generate')->name('io_generator_builder_generate');
+// Route::post('generator_builder/rollback', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@rollback')->name('io_generator_builder_rollback'); 
+// Route::post(
+//     'generator_builder/generate-from-file',
+//     '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@generateFromFile'
+// )->name('io_generator_builder_generate_from_file');
 
 Route::group(['prefix' => 'artisan'], function () {
     Route::get('clear_cache', function () {

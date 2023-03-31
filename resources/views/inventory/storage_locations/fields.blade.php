@@ -26,7 +26,7 @@
 <div class="form-group row mb-3">
     {!! Form::label('warehouse_id', __('models/storageLocations.fields.warehouse_id').':', ['class' => 'col-md-3 col-form-label']) !!}
 <div class="col-md-9"> 
-    {!! Form::select('warehouse_id', $warehouseItems, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+    {!! Form::select('warehouse_id', $warehouseItems, null, ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'setStorageLocationOption(this, \'#parent_id\')']) !!}
 </div>
 </div>
 
@@ -37,3 +37,27 @@
     {!! Form::select('parent_id', $parentItems, null, ['class' => 'form-control select2']) !!}
 </div>
 </div>
+
+@push('scripts')
+    <script type="text/javascript">       
+        $(function(){
+            if(_.isEmpty($('#parent_id').val())){
+                $('#parent_id').prop('disabled', 1)                
+            }
+            $('#warehouse_id').trigger('change')
+        })
+        function setStorageLocationOption(_elm, _target){
+            let _val = $(_elm).val()
+            $(_target).prop('disabled', 0)
+            
+            if(_.isEmpty(_val)){
+                $(_target).prop('disabled', 1)
+                $(_target).val('')
+                $(_target).trigger('change')
+            }else{
+                $(_target).find('optgroup').prop('disabled', 1)
+                $(_target).find('optgroup[label="'+$(_elm).find('option:selected').text()+'"]').prop('disabled', 0)
+            }
+        }
+    </script>
+@endpush

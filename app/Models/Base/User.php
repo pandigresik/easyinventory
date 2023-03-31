@@ -7,6 +7,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Cache;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -67,9 +68,12 @@ class User extends Authenticatable
     use HasPermissions;
     use Cachable;
     use SearchModelTrait;
+    use HasApiTokens;
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
     public $table = 'users';
+
+    protected $appends = ['avatar'];
 
     public $fillable = [
         'id',
@@ -146,5 +150,9 @@ class User extends Authenticatable
         });
 
         return $result;
+    }
+
+    public function getAvatarAttribute($value){
+        return 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png';
     }
 }

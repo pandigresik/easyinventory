@@ -1,8 +1,8 @@
 <?php
 
 return array (
-  'singular' => 'StockMove',
-  'plural' => 'StockMoves',
+  'singular' => 'StockOutMove',
+  'plural' => 'StockOutMoves',
   'fields' => 
   array (
     'id' => 'Id',
@@ -10,8 +10,8 @@ return array (
     'number' => 'Number',
     'references' => 'References',
     'responsbility' => 'Responsbility',
-    'warehouse_id' => 'Warehouse Id',
+    'warehouse_id' => 'Warehouse',
     'stock_move_type' => 'Stock Move Type',
-    'warehouse_origin_id' => 'Origin Warehouse',
+    'warehouse_destination_id' => 'Destination Warehouse',
   ),
 );

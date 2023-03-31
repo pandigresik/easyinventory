@@ -114,4 +114,31 @@ class StorageLocation extends Model
     {
         return $this->hasMany(\App\Models\Inventory\StockProduct::class, 'storage_location_id');
     }
+
+    public function pluckGroupWarehouse($hasStock = false, $excludeStorageLocationId = []){
+        $query = $this->whereIsLeaf()
+            ->with(['warehouse']);
+        if($hasStock){
+            $query->whereHas('stockProducts', function($q) use ($excludeStorageLocationId) {
+                return $q->where('quantity','>',0)->orWhere(function($r) use ($excludeStorageLocationId) {
+                    return $r->whereIn('id', $excludeStorageLocationId);
+                }); 
+            });
+        }
+        return $query->get()
+            ->groupBy('warehouse.name')->map(function($item){
+            return $item->pluck('name', 'id');
+        })->toArray();        
+    }
+
+    public function pluckWithWarehouse(){
+        $map = $this->whereIsLeaf()
+            ->with(['warehouse'])
+            ->get()
+            ->mapWithKeys(function($item){
+            return [$item->id => $item->warehouse->name.' - '.$item->name];
+        })->toArray();        
+        
+        return $map;
+    }
 }

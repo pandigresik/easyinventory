@@ -9,6 +9,7 @@ use App\Repositories\Inventory\StockMoveRepository;
 use App\Repositories\Inventory\WarehouseRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use App\Models\Inventory\StorageLocation;
 use App\Repositories\Inventory\ProductRepository;
 use App\Repositories\Inventory\StorageLocationLeafRepository;
 use Response;
@@ -60,7 +61,8 @@ class StockMoveController extends AppBaseController
 
         $stockMove = $this->getRepositoryObj()->create($input);
         if($stockMove instanceof Exception){
-            return redirect()->back()->withInput()->withErrors(['error', $stockMove->getMessage()]);
+            $input['transaction_date'] = localFormatDate($input['transaction_date']); 
+            return redirect()->back()->withInput($input)->withErrors(['error', $stockMove->getMessage()]);
         }
         
         Flash::success(__('messages.saved', ['model' => __('models/stockMoves.singular')]));
@@ -125,10 +127,11 @@ class StockMoveController extends AppBaseController
 
             return redirect(route($this->baseRoute.'.index'));
         }
-
-        $stockMove = $this->getRepositoryObj()->update($request->all(), $id);
+        $input = $request->all();
+        $stockMove = $this->getRepositoryObj()->update($input, $id);
         if($stockMove instanceof Exception){
-            return redirect()->back()->withInput()->withErrors(['error', $stockMove->getMessage()]);
+            $input['transaction_date'] = localFormatDate($input['transaction_date']); 
+            return redirect()->back()->withInput($input)->withErrors(['error', $stockMove->getMessage()]);
         }
 
         Flash::success(__('messages.updated', ['model' => __('models/stockMoves.singular')]));
@@ -173,12 +176,11 @@ class StockMoveController extends AppBaseController
      */
     protected function getOptionItems(){        
         $warehouse = new WarehouseRepository();
-        $product = new ProductRepository();
-        $location = new StorageLocationLeafRepository();
+        $product = new ProductRepository();        
         return [            
             'warehouseItems' => ['' => __('crud.option.warehouse_placeholder')] + $warehouse->pluck(),
-            'productItems' => ['' => __('crud.option.product_placeholder')] + $product->pluck(),
-            'locationItems' => ['' => __('crud.option.location_placeholder')] + $location->pluck(),
+            'productItems' => ['' => __('crud.option.product_placeholder')] + $product->pluck(),            
+            'locationItems' => ['' => __('crud.option.product_placeholder')] +  (new StorageLocation() )->pluckGroupWarehouse(),
             'baseView' => $this->baseView,
             'baseRoute' => $this->baseRoute
         ];

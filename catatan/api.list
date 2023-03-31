@@ -1,0 +1,1 @@
+|        | POST      | api/login                                                         | api.                                   | App\Http\Controllers\API\Auth\ApiLoginController@requestToken               | api                                          |
