@@ -69,8 +69,9 @@ class UserRepository extends BaseRepository
     {
         $model = parent::update($input, $id);
         $roles = $input['roles'] ?? [];
+        $warehouses = $input['warehouses'] ?? [];
         $model->syncRoles($roles);
-
+        $model->warehouses()->sync($warehouses);
         return $model;
     }
 }

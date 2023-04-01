@@ -24,13 +24,22 @@
 </div>
 @endif
 
-<!-- List Permission Field -->
+<!-- List Role Field -->
 <div class="form-group row mb-3">
     {!! Form::label('role', 'Role:', ['class' => 'col-md-3 col-form-label']) !!}
     <div class="col-9">
     @include('base.users.role_fields')
     </div>
 </div>
+
+<!-- List Warehouse Field -->
+<div class="form-group row mb-3">
+    {!! Form::label('warehouse', 'Warehouse:', ['class' => 'col-md-3 col-form-label']) !!}
+    <div class="col-9">
+    @include('base.users.warehouse_fields')
+    </div>
+</div>
+
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12 mt-2">

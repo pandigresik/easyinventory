@@ -2,6 +2,8 @@
 
 namespace App\Models\Base;
 
+use App\Models\Inventory\UserWarehouse;
+use App\Models\Inventory\Warehouse;
 use App\Traits\SearchModelTrait;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -73,7 +75,7 @@ class User extends Authenticatable
     const UPDATED_AT = 'updated_at';
     public $table = 'users';
 
-    protected $appends = ['avatar'];
+    protected $appends = ['avatar', 'warehouse'];
 
     public $fillable = [
         'id',
@@ -140,13 +142,41 @@ class User extends Authenticatable
         return $roles->where('model_id', $this->id);
     }
 
-    public function getUnitAttribute()
+    /**
+     * Get all of the warehouses for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    // public function warehouses()
+    // {
+    //     return $this->hasManyThrough(Warehouse::class, UserWarehouse::class, 'warehouse_id', 'id', 'user_id', 'warehouse_id');
+    // }
+    
+    /**
+     * The warehouses that belong to the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function warehouses()
+    {
+        return $this->belongsToMany(Warehouse::class);
+    }
+
+    /**
+     * Get all of the userWarehouses for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userWarehouses()
+    {
+        return $this->hasMany(UserWarehouse::class);
+    }
+
+    public function getWarehouseAttribute()
     {
         $result = collect();
-        $this->roles->each(function ($item) use ($result) {
-            $item->units()->each(function ($unit) use ($result) {
-                $result->add($unit);
-            });
+        $this->warehouses->each(function ($item) use ($result) {
+            $result->add($item->name);
         });
 
         return $result;

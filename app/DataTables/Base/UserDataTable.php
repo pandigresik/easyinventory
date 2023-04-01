@@ -70,6 +70,7 @@ class UserDataTable extends DataTable
         return [
             'name',
             'email',
+            'warehouse'
         ];
     }
 
