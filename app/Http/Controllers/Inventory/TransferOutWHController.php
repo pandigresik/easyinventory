@@ -11,7 +11,7 @@ use App\Repositories\Inventory\WarehouseRepository;
 class TransferOutWHController extends StockMoveController
 {
     protected $baseView = 'inventory.transfer_out_wh';
-    protected $baseRoute = 'inventory.transferOutWHController';
+    protected $baseRoute = 'inventory.transferOutWH';
     protected $excludeProductId = [];
     protected $excludeStorageLocationId = [];
 

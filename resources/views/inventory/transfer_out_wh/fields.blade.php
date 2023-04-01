@@ -1,6 +1,6 @@
 <!-- Transaction Date Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('transaction_date', __('models/stockOutMoves.fields.transaction_date').':', ['class' => 'col-md-3
+    {!! Form::label('transaction_date', __('models/transferOutWH.fields.transaction_date').':', ['class' => 'col-md-3
     col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::text('transaction_date', null, ['class' => 'form-control datetime', 'required' => 'required'
@@ -12,7 +12,7 @@
 @if (isset($lines))
 <!-- Number Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('number', __('models/stockOutMoves.fields.number').':', ['class' => 'col-md-3 col-form-label']) !!}
+    {!! Form::label('number', __('models/transferOutWH.fields.number').':', ['class' => 'col-md-3 col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::text('number', null, ['class' => 'form-control','maxlength' => 25,'readonly' => 'readonly', 'required' =>
         'required']) !!}
@@ -22,7 +22,7 @@
 
 <!-- References Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('references', __('models/stockOutMoves.fields.references').':', ['class' => 'col-md-3 col-form-label'])
+    {!! Form::label('references', __('models/transferOutWH.fields.references').':', ['class' => 'col-md-3 col-form-label'])
     !!}
     <div class="col-md-9">
         {!! Form::text('references', null, ['class' => 'form-control','maxlength' => 50,'maxlength' => 50, 'required' =>
@@ -32,7 +32,7 @@
 
 <!-- Responsbility Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('responsbility', __('models/stockOutMoves.fields.responsbility').':', ['class' => 'col-md-3
+    {!! Form::label('responsbility', __('models/transferOutWH.fields.responsbility').':', ['class' => 'col-md-3
     col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::text('responsbility', null, ['class' => 'form-control','maxlength' => 50,'maxlength' => 50, 'required'
@@ -42,7 +42,7 @@
 
 <!-- Warehouse Id Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('warehouse_id', __('models/stockOutMoves.fields.warehouse_id').':', ['class' => 'col-md-3
+    {!! Form::label('warehouse_id', __('models/transferOutWH.fields.warehouse_id').':', ['class' => 'col-md-3
     col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::select('warehouse_id', $warehouseItems, null, ['class' => 'form-control select2', 'required' =>
@@ -52,7 +52,7 @@
 
 <!-- Warehouse Destination Id Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('warehouse_destination_id', __('models/stockOutMoves.fields.warehouse_destination_id').':', ['class' => 'col-md-3
+    {!! Form::label('warehouse_destination_id', __('models/transferOutWH.fields.warehouse_destination_id').':', ['class' => 'col-md-3
     col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::select('warehouse_destination_id', $warehouseDestinationItems, null, ['class' => 'form-control select2', 'required' =>

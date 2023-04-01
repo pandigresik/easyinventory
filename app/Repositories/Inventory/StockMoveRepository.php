@@ -4,6 +4,7 @@ namespace App\Repositories\Inventory;
 
 use App\Models\Inventory\Product;
 use App\Models\Inventory\StockMove;
+use App\Models\Inventory\StockMoveLine;
 use App\Models\Inventory\StockProduct;
 use App\Repositories\BaseRepository;
 use Exception;
@@ -67,15 +68,14 @@ class StockMoveRepository extends BaseRepository
             $this->setDetails($detail, $model);
 
             if(in_array($this->moveType,['TR_OUT'])){
-                // create references move document                
-                $this->updateStockProduct = 0;
-                $refModel = $this->model->newInstance($input);
-                $refModel->stock_move_type = 'TMP_'.$this->moveType;
-                $refModel->references = $model->number;
-                $refModel->warehouse_id = $input['warehouse_destination_id'];
-                $refModel->save();
-                $this->setDetails($detail, $refModel);  
+                $this->createReferenceTransferOutWH($model, $input, $detail);
             }
+
+            if(in_array($this->moveType,['TR_IN'])){
+                // update quantity references document from origin warehouse
+                $this->updateQtyReferenceTransferOutWH($model, $input, $detail);
+            }
+
             $this->model->getConnection()->commit();
 
             return $model;
@@ -99,13 +99,8 @@ class StockMoveRepository extends BaseRepository
             $this->setDetails($detail, $model, 'UPDATE');
 
             if(in_array($this->moveType,['TR_OUT'])){
-                // create references move document                
-                $this->updateStockProduct = 0;
-                $refModel = $this->model->newQuery()->where(['references' => $model->number, 'stock_move_type' => 'TMP_'.$this->moveType])->firstOrNew();
-                $refModel->warehouse_id = $input['warehouse_destination_id'];
-                $refModel->references = $model->number;
-                $refModel->save(); 
-                $this->setDetails($detail, $refModel);  
+                // create references move document                                
+                $this->updateReferenceTransferOutWH($model, $input, $detail); 
             }
 
             $this->model->getConnection()->commit();
@@ -174,6 +169,73 @@ class StockMoveRepository extends BaseRepository
         }
     }
 
+    protected  function createReferenceTransferOutWH($model, $input, $detail){
+        // create references move document                
+        $this->updateStockProduct = 0;
+        $refModel = $this->model->newInstance($input);
+        $refModel->stock_move_type = 'TMP_'.$this->moveType;
+        $refModel->references = $model->number;
+        $refModel->warehouse_id = $input['warehouse_destination_id'];
+        $refModel->save();
+        $this->setDetails($detail, $refModel);
+    }
+
+    protected  function updateReferenceTransferOutWH($model, $input, $detail){
+        $this->updateStockProduct = 0;
+        $refModel = $this->model->newQuery()->where(['references' => $model->number, 'stock_move_type' => 'TMP_'.$this->moveType])->firstOrNew();
+        $refModel->warehouse_id = $input['warehouse_destination_id'];
+        $refModel->references = $model->number;
+        $refModel->save(); 
+        $this->setDetails($detail, $refModel); 
+    }
+
+    protected  function deleteReferenceTransferOutWH($model){
+        $refModel = $this->model->newQuery()->where(['references' => $model->number, 'stock_move_type' => 'TMP_'.$model->stock_move_type])->first();
+        if($refModel){
+            $refModel->stockMoveLines()->delete();
+            $refModel->delete(); 
+        }         
+    }
+    
+    protected function updateQtyReferenceTransferOutWH($model, $input){
+        $originWarehouse = $input['warehouse_origin_id'];
+        $currentWarehouse = $input['warehouse_id'];
+        $listTransfer = StockMoveLine::whereHas('stockMove', function($q) use ($currentWarehouse, $originWarehouse) { 
+            return $q->where(['warehouse_id' => $currentWarehouse, 'stock_move_type' => 'TMP_TR_OUT'])
+                ->whereIn('references', function($r) use ($originWarehouse) {
+                    return $r->select(['number'])
+                            ->from('stock_moves')
+                            ->where(['warehouse_id' => $originWarehouse, 'stock_move_type' => 'TR_OUT']);
+                })
+                // ->whereRaw('`references` in (select number from stock_moves where warehouse_id = '.$originWarehouse.' and stock_move_type = \'TR_OUT\')')
+                ;
+        })->disableModelCaching()
+        ->where('quantity','>', 0)        
+        ->get();
+
+        if($listTransfer){
+            $stockMoveLines = $model->stockMoveLines->groupBy('product_id')->map(function($item){
+                return $item->sum('quantity');
+            })->toArray();
+            foreach($listTransfer as $item){                
+                $qty = $item->getRawOriginal('quantity');
+                $totalProduct = $stockMoveLines[$item->product_id]  ?? 0;
+                
+                if($qty > $totalProduct){
+                    $qty -= $totalProduct;
+                    $stockMoveLines[$item->product_id] = 0;
+                }else{
+                    $stockMoveLines[$item->product_id] -= $qty;
+                    $qty = 0;                                                            
+                }
+                
+                $item->quantity = $qty;
+                $item->save();
+            }
+        }
+
+    }
+
     /**
      * @param int $id
      *
@@ -185,6 +247,10 @@ class StockMoveRepository extends BaseRepository
     {
         $query = $this->model->newQuery();
         $model = $query->findOrFail($id);
+        $this->updateStockBeforeUpdate($model);
+        if($model->stock_move_type == 'TR_OUT'){
+            $this->deleteReferenceTransferOutWH($model);
+        }
         $model->stockMoveLines()->delete();
         return $model->delete();
     }
@@ -208,4 +274,5 @@ class StockMoveRepository extends BaseRepository
 
         return $this;
     }
+
 }

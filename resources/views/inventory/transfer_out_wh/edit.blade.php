@@ -4,7 +4,7 @@
     @push('breadcrumb')
         <ol class="breadcrumb  my-0 ms-2">
           <li class="breadcrumb-item">
-             <a href="{!! route($baseRoute.'.index') !!}">@lang('models/stockOutMoves.singular')</a>
+             <a href="{!! route($baseRoute.'.index') !!}">@lang('models/transferOutWH.singular')</a>
           </li>
           <li class="breadcrumb-item active">@lang('crud.edit')</li>
         </ol>
@@ -18,7 +18,7 @@
                       <div class="card">                          
                           <div class="card-header">
                               <i class="fa fa-edit fa-lg"></i>
-                              <strong>Edit @lang('models/stockOutMoves.singular')</strong>
+                              <strong>Edit @lang('models/transferOutWH.singular')</strong>
                           </div>
                           <div class="card-body">                              
 

@@ -47,8 +47,9 @@ Route::group(['middleware' => ['auth']], function () {
         // Route::resource('stockMoves', Inventory\StockMoveController::class, ["as" => 'inventory']);
         Route::resource('stockInMoves', Inventory\StockInMoveController::class, ["as" => 'inventory']);
         Route::resource('stockOutMoves', Inventory\StockOutMoveController::class, ["as" => 'inventory']);
-        Route::resource('transferInWHController', Inventory\TransferInWHController::class, ["as" => 'inventory']);
-        Route::resource('transferOutWHController', Inventory\TransferOutWHController::class, ["as" => 'inventory']);
+        Route::get('transferInWH/getListTransferProduct',[App\Http\Controllers\Inventory\TransferInWHController::class, 'getListTransferProduct'])->name('inventory.transferInWH.list-product');
+        Route::resource('transferInWH', Inventory\TransferInWHController::class, ["as" => 'inventory']);        
+        Route::resource('transferOutWH', Inventory\TransferOutWHController::class, ["as" => 'inventory']);
         
         // Route::resource('stockMoveLines', Inventory\StockMoveLineController::class, ["as" => 'inventory'])->only(['index']);
         Route::get('stockMoveLines/{productId}/{storageLocationId}', [App\Http\Controllers\Inventory\StockMoveLineController::class, 'index'])->name('inventory.stockMoveLines.product');

@@ -1,6 +1,6 @@
 <!-- Transaction Date Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('transaction_date', __('models/stockMoves.fields.transaction_date').':', ['class' => 'col-md-3
+    {!! Form::label('transaction_date', __('models/transferInWH.fields.transaction_date').':', ['class' => 'col-md-3
     col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::text('transaction_date', null, ['class' => 'form-control datetime', 'required' => 'required'
@@ -12,7 +12,7 @@
 @if (isset($lines))
 <!-- Number Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('number', __('models/stockMoves.fields.number').':', ['class' => 'col-md-3 col-form-label']) !!}
+    {!! Form::label('number', __('models/transferInWH.fields.number').':', ['class' => 'col-md-3 col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::text('number', null, ['class' => 'form-control','maxlength' => 25,'readonly' => 'readonly', 'required' =>
         'required']) !!}
@@ -22,7 +22,7 @@
 
 <!-- References Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('references', __('models/stockMoves.fields.references').':', ['class' => 'col-md-3 col-form-label'])
+    {!! Form::label('references', __('models/transferInWH.fields.references').':', ['class' => 'col-md-3 col-form-label'])
     !!}
     <div class="col-md-9">
         {!! Form::text('references', null, ['class' => 'form-control','maxlength' => 50,'maxlength' => 50, 'required' =>
@@ -32,7 +32,7 @@
 
 <!-- Responsbility Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('responsbility', __('models/stockMoves.fields.responsbility').':', ['class' => 'col-md-3
+    {!! Form::label('responsbility', __('models/transferInWH.fields.responsbility').':', ['class' => 'col-md-3
     col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::text('responsbility', null, ['class' => 'form-control','maxlength' => 50,'maxlength' => 50, 'required'
@@ -42,7 +42,7 @@
 
 <!-- Warehouse Id Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('warehouse_id', __('models/stockMoves.fields.warehouse_id').':', ['class' => 'col-md-3
+    {!! Form::label('warehouse_id', __('models/transferInWH.fields.warehouse_id').':', ['class' => 'col-md-3
     col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::select('warehouse_id', $warehouseItems, null, ['class' => 'form-control select2', 'required' =>
@@ -52,11 +52,11 @@
 
 <!-- Warehouse Origin Id Field -->
 <div class="form-group row mb-3">
-    {!! Form::label('warehouse_origin_id', __('models/stockMoves.fields.warehouse_origin_id').':', ['class' => 'col-md-3
+    {!! Form::label('warehouse_origin_id', __('models/transferInWH.fields.warehouse_origin_id').':', ['class' => 'col-md-3
     col-form-label']) !!}
     <div class="col-md-9">
         {!! Form::select('warehouse_origin_id', $warehouseOriginItems, null, ['class' => 'form-control select2', 'required' =>
-        'required']) !!}
+        'required', 'onchange' => 'loadListProducts(this)', 'data-url' => route('inventory.transferInWH.list-product')]) !!}
     </div>
 </div>
 
@@ -69,7 +69,7 @@
                 <th>Lot Number / Batch</th>
                 <th>Location</th>
                 <th>Quantity</th>
-                <th>Description</th>                
+                <th>Description</th> 
                 <th></th>
             </tr>
         </thead>
@@ -121,6 +121,40 @@
 
                 $('select[name^="stock_move_line[storage_location_id]"]').find('optgroup[label="'+$(_elm).find('option:selected').text()+'"]').prop('disabled', 0)
             }
+        }
+
+        function loadListProducts(_elm){
+            if(_.isEmpty($(_elm).val())){
+                return
+            }
+            $('#table-stock-move-line tbody>tr:not(:last)').remove()
+            main.getAjaxData($(_elm).data('url'), 'GET', {'originWarehouse' : $(_elm).val(), 'currentWarehouse' : $('#warehouse_id').val()},
+                function(data){                    
+                    if(!_.isEmpty(data.data)){
+                        let _selectProductIdElm, _qtyElm, _optionMask
+                        data.data.forEach((element, index, arr) => {
+                            _selectProductIdElm = $('#table-stock-move-line tbody>tr:last').find('select[name^="stock_move_line[product_id]"]')
+                            _selectProductIdElm.val(element.product_id)
+                            _selectProductIdElm.trigger('change')
+
+                            _qtyElm = $('#table-stock-move-line tbody>tr:last').find('input[name^="stock_move_line[quantity]"]')
+                            _qtyElm.val(element.quantity)
+                            _qtyElm.trigger('change')
+                            _optionMask = _qtyElm.data('optionmask')
+                            _optionMask.max = element.quantity
+                            _qtyElm.data('optionmask', _optionMask)
+                            main.initInputmask(_qtyElm.closest('td'))
+                            if(index != arr.length - 1){
+                                $('#table-stock-move-line tbody>tr:last').find('td:last>button').click()
+                            }else{
+                                $('#table-stock-move-line tbody>tr:last').find('td:last>button').remove()                                
+                            }
+                            
+                            
+                        });
+                    }
+                }
+            )
         }
     </script>
 @endpush
