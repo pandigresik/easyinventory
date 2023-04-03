@@ -4,7 +4,6 @@ namespace App\Models\Inventory;
 
 use App\Models\Base as Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @SWG\Definition(
@@ -26,8 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class UserWarehouse extends Model
 {
-    use HasFactory;
-        use SoftDeletes;
+    use HasFactory;        
 
     public $table = 'user_warehouse';
     

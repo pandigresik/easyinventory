@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Inventory;
 
 use App\DataTables\Inventory\ProductDataTable;
-use App\Http\Requests\Inventory;
+use App\Traits\UploadedFile;
 use App\Http\Requests\Inventory\CreateProductRequest;
 use App\Http\Requests\Inventory\UpdateProductRequest;
 use App\Repositories\Inventory\ProductRepository;
@@ -16,12 +16,14 @@ use Exception;
 
 class ProductController extends AppBaseController
 {
+    use UploadedFile;
     /** @var  ProductRepository */
     protected $repository;
 
     public function __construct()
     {
         $this->repository = ProductRepository::class;
+        $this->pathFolder .= '/product';
     }
 
     /**
@@ -55,7 +57,9 @@ class ProductController extends AppBaseController
     public function store(CreateProductRequest $request)
     {
         $input = $request->all();
-
+        if($request->file('file_upload')){
+            $input['image'] = $this->uploadFile($request, 'file_upload');
+        }
         $product = $this->getRepositoryObj()->create($input);
         if($product instanceof Exception){
             return redirect()->back()->withInput()->withErrors(['error', $product->getMessage()]);
@@ -123,8 +127,11 @@ class ProductController extends AppBaseController
 
             return redirect(route('inventory.products.index'));
         }
-
-        $product = $this->getRepositoryObj()->update($request->all(), $id);
+        $input = $request->all();
+        if($request->file('file_upload')){
+            $input['image'] = $this->uploadFile($request, 'file_upload');
+        }
+        $product = $this->getRepositoryObj()->update($input, $id);
         if($product instanceof Exception){
             return redirect()->back()->withInput()->withErrors(['error', $product->getMessage()]);
         }

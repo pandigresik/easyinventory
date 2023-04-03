@@ -48,7 +48,8 @@ class Product extends Model
         'name',
         'description',
         'product_category_id',
-        'uom_id'
+        'uom_id',
+        'image'
     ];
 
     /**
@@ -62,7 +63,8 @@ class Product extends Model
         'name' => 'string',
         'description' => 'string',
         'product_category_id' => 'integer',
-        'uom_id' => 'integer'
+        'uom_id' => 'integer',
+        'image' => 'string'
     ];
 
     /**

@@ -104,4 +104,22 @@ class StockMoveLine extends Model
     {
         return $this->belongsTo(\App\Models\Inventory\StorageLocation::class, 'storage_location_id');
     }
+
+    public function listTransferInWH($currentWarehouse, $originWarehouse, $withProduct = false){
+        $query = $this->selectRaw('sum(quantity) as quantity, product_id')->disableModelCaching()->whereHas('stockMove', function($q) use ($currentWarehouse, $originWarehouse) { 
+            return $q->where(['warehouse_id' => $currentWarehouse, 'stock_move_type' => 'TMP_TR_OUT'])
+                ->whereIn('references', function($r) use ($originWarehouse) {
+                    return $r->select(['number'])
+                            ->from('stock_moves')
+                            ->where(['warehouse_id' => $originWarehouse, 'stock_move_type' => 'TR_OUT']);
+                })
+                // ->whereRaw('`references` in (select number from stock_moves where warehouse_id = '.$originWarehouse.' and stock_move_type = \'TR_OUT\')')
+                ;
+        })->where('quantity','>', 0)
+        ->groupBy(['product_id']);
+        if($withProduct){
+            $query->with(['product']);
+        }
+        return $query->get()->toArray();
+    }
 }

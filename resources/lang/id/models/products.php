@@ -11,5 +11,6 @@ return array (
     'description' => 'Description',
     'product_category_id' => 'Product Category Id',
     'uom_id' => 'Uom Id',
+    'file_upload' => 'Image',
   ),
 );

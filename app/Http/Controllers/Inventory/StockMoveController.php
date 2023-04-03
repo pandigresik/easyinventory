@@ -6,12 +6,11 @@ use App\DataTables\Inventory\StockMoveDataTable;
 use App\Http\Requests\Inventory\CreateStockMoveRequest;
 use App\Http\Requests\Inventory\UpdateStockMoveRequest;
 use App\Repositories\Inventory\StockMoveRepository;
-use App\Repositories\Inventory\WarehouseRepository;
+use App\Repositories\Inventory\WarehouseUserRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use App\Models\Inventory\StorageLocation;
 use App\Repositories\Inventory\ProductRepository;
-use App\Repositories\Inventory\StorageLocationLeafRepository;
 use Response;
 use Exception;
 
@@ -175,7 +174,7 @@ class StockMoveController extends AppBaseController
      * @return Response
      */
     protected function getOptionItems(){        
-        $warehouse = new WarehouseRepository();
+        $warehouse = new WarehouseUserRepository();
         $product = new ProductRepository();        
         return [            
             'warehouseItems' => ['' => __('crud.option.warehouse_placeholder')] + $warehouse->pluck(),

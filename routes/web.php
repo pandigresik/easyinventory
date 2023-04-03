@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('qrcode', [\App\Http\Controllers\Inventory\QRController::class, 'index'])->name('inventory.qrcode');
     });
     Route::get('/selectAjax', [App\Http\Controllers\SelectAjaxController::class, 'index'])->name('selectAjax');
+    Route::get('/storage', 'StorageController');
 //    Route::get('/events', [App\Http\Controllers\EventsController::class, 'index'])->name('events.index');
 });
 

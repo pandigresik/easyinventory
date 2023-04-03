@@ -87,4 +87,9 @@ class Warehouse extends Model
     {
         return $this->hasMany(\App\Models\Inventory\StorageLocation::class, 'warehouse_id');
     }
+
+    public function scopeCanAccess($query){
+        $userWarehouse = UserWarehouse::where(['user_id' => auth()->id()])->get()->pluck('warehouse_id','warehouse_id')->toArray();
+        return $query->whereIn('id', $userWarehouse);
+    }
 }

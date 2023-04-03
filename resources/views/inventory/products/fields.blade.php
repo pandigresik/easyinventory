@@ -37,3 +37,17 @@
     {!! Form::select('uom_id', $uomItems, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
 </div>
 </div>
+
+<!-- Name Field -->
+<div class="form-group row mb-3">
+    {!! Form::label('file_upload', __('models/products.fields.file_upload').':', ['class' => 'col-md-3 col-form-label']) !!}
+<div class="col-md-9">
+    @if (isset($product) && !empty($product->image))
+    <div>
+        <a href="{{ Storage::url('').'?path='.$product->image }}"  target="_blank" rel="noopener noreferrer">file attachment</a>
+    </div>    
+    @endif     
+    {!! Form::file('file_upload') !!}    
+</div>
+</div>
+

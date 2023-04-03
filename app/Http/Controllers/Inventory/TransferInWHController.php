@@ -23,18 +23,7 @@ class TransferInWHController extends StockMoveController
     public function getListTransferProduct(){
         $currentWarehouse = request()->get('currentWarehouse');
         $originWarehouse = request()->get('originWarehouse');
-        $detail = StockMoveLine::selectRaw('sum(quantity) as quantity, product_id')->disableModelCaching()->whereHas('stockMove', function($q) use ($currentWarehouse, $originWarehouse) { 
-                return $q->where(['warehouse_id' => $currentWarehouse, 'stock_move_type' => 'TMP_TR_OUT'])
-                    ->whereIn('references', function($r) use ($originWarehouse) {
-                        return $r->select(['number'])
-                                ->from('stock_moves')
-                                ->where(['warehouse_id' => $originWarehouse, 'stock_move_type' => 'TR_OUT']);
-                    })
-                    // ->whereRaw('`references` in (select number from stock_moves where warehouse_id = '.$originWarehouse.' and stock_move_type = \'TR_OUT\')')
-                    ;
-            })->where('quantity','>', 0)
-            ->groupBy(['product_id'])
-            ->get()->toArray();
+        $detail = (new StockMoveLine())->listTransferInWH($currentWarehouse, $originWarehouse);
         return $this->sendResponse($detail, 'success');
     }
 

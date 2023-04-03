@@ -22,6 +22,7 @@ class Base extends Model
     const CREATED_BY = 'created_by';
     const UPDATED_BY = 'updated_by';
 
+    protected $hidden = ['created_at', 'deleted_at', 'updated_at', 'created_by', 'updated_by'];
     protected static $logFillable = true;
 
     /**

@@ -2,28 +2,30 @@
 
 namespace App\Http\Controllers\API\Inventory;
 
-use App\Http\Requests\API\Inventory\CreateWarehouseAPIRequest;
-use App\Http\Requests\API\Inventory\UpdateWarehouseAPIRequest;
-use App\Models\Inventory\Warehouse;
-use App\Repositories\Inventory\WarehouseRepository;
+use App\Http\Requests\API\Inventory\CreateStockMoveAPIRequest;
+use App\Http\Requests\API\Inventory\UpdateStockMoveAPIRequest;
+use App\Models\Inventory\StockMove;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
-use App\Http\Resources\Inventory\WarehouseResource;
+use App\Http\Resources\Inventory\StockMoveResource;
+use App\Models\Inventory\StockMoveLine;
+use App\Repositories\Inventory\TransferInWHRepository;
+use Illuminate\Validation\ValidationException;
 use Response;
 
 /**
- * Class WarehouseController
+ * Class StockMoveController
  * @package App\Http\Controllers\API\Inventory
  */
 
-class WarehouseAPIController extends AppBaseController
+class TransferInWHAPIController extends AppBaseController
 {
-    /** @var  WarehouseRepository */
-    protected $warehouseRepository;
+    /** @var  TransferInWHRepository */
+    private $transferInWHRepository;
 
-    public function __construct(WarehouseRepository $warehouseRepo)
+    public function __construct(TransferInWHRepository $transferInWHRepository)
     {
-        $this->warehouseRepository = $warehouseRepo;
+        $this->transferInWHRepository = $transferInWHRepository;
     }
 
     /**
@@ -31,10 +33,10 @@ class WarehouseAPIController extends AppBaseController
      * @return Response
      *
      * @SWG\Get(
-     *      path="/warehouses",
-     *      summary="Get a listing of the Warehouses.",
-     *      tags={"Warehouse"},
-     *      description="Get all Warehouses",
+     *      path="/stockMoves",
+     *      summary="Get a listing of the StockMoves.",
+     *      tags={"StockMove"},
+     *      description="Get all StockMoves",
      *      produces={"application/json"},
      *      @SWG\Response(
      *          response=200,
@@ -48,7 +50,7 @@ class WarehouseAPIController extends AppBaseController
      *              @SWG\Property(
      *                  property="data",
      *                  type="array",
-     *                  @SWG\Items(ref="#/definitions/Warehouse")
+     *                  @SWG\Items(ref="#/definitions/StockMove")
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -60,31 +62,31 @@ class WarehouseAPIController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $warehouses = $this->warehouseRepository->all(
+        $stockMoves = $this->transferInWHRepository->all(
             $request->except(['skip', 'limit']),
             $request->get('skip'),
             $request->get('limit')
         );
 
-        return $this->sendResponse(WarehouseResource::collection($warehouses), 'Warehouses retrieved successfully');
+        return $this->sendResponse(StockMoveResource::collection($stockMoves), 'Stock Moves retrieved successfully');
     }
 
     /**
-     * @param CreateWarehouseAPIRequest $request
+     * @param CreateStockMoveAPIRequest $request
      * @return Response
      *
      * @SWG\Post(
-     *      path="/warehouses",
-     *      summary="Store a newly created Warehouse in storage",
-     *      tags={"Warehouse"},
-     *      description="Store Warehouse",
+     *      path="/stockMoves",
+     *      summary="Store a newly created StockMove in storage",
+     *      tags={"StockMove"},
+     *      description="Store StockMove",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="body",
      *          in="body",
-     *          description="Warehouse that should be stored",
+     *          description="StockMove that should be stored",
      *          required=false,
-     *          @SWG\Schema(ref="#/definitions/Warehouse")
+     *          @SWG\Schema(ref="#/definitions/StockMove")
      *      ),
      *      @SWG\Response(
      *          response=200,
@@ -97,7 +99,7 @@ class WarehouseAPIController extends AppBaseController
      *              ),
      *              @SWG\Property(
      *                  property="data",
-     *                  ref="#/definitions/Warehouse"
+     *                  ref="#/definitions/StockMove"
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -107,13 +109,13 @@ class WarehouseAPIController extends AppBaseController
      *      )
      * )
      */
-    public function store(CreateWarehouseAPIRequest $request)
+    public function store(CreateStockMoveAPIRequest $request)
     {
         $input = $request->all();
 
-        $warehouse = $this->warehouseRepository->create($input);
+        $stockMove = $this->transferInWHRepository->create($input);
 
-        return $this->sendResponse(new WarehouseResource($warehouse), 'Warehouse saved successfully');
+        return $this->sendResponse(new StockMoveResource($stockMove), 'Stock Move saved successfully');
     }
 
     /**
@@ -121,14 +123,14 @@ class WarehouseAPIController extends AppBaseController
      * @return Response
      *
      * @SWG\Get(
-     *      path="/warehouses/{id}",
-     *      summary="Display the specified Warehouse",
-     *      tags={"Warehouse"},
-     *      description="Get Warehouse",
+     *      path="/stockMoves/{id}",
+     *      summary="Display the specified StockMove",
+     *      tags={"StockMove"},
+     *      description="Get StockMove",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="id",
-     *          description="id of Warehouse",
+     *          description="id of StockMove",
      *          type="integer",
      *          required=true,
      *          in="path"
@@ -144,7 +146,7 @@ class WarehouseAPIController extends AppBaseController
      *              ),
      *              @SWG\Property(
      *                  property="data",
-     *                  ref="#/definitions/Warehouse"
+     *                  ref="#/definitions/StockMove"
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -156,30 +158,30 @@ class WarehouseAPIController extends AppBaseController
      */
     public function show($id)
     {
-        /** @var Warehouse $warehouse */
-        $warehouse = $this->warehouseRepository->find($id);
+        /** @var StockMove $stockMove */
+        $stockMove = $this->transferInWHRepository->find($id);
 
-        if (empty($warehouse)) {
-            return $this->sendError('Warehouse not found');
+        if (empty($stockMove)) {
+            return $this->sendError('Stock Move not found');
         }
 
-        return $this->sendResponse(new WarehouseResource($warehouse), 'Warehouse retrieved successfully');
+        return $this->sendResponse(new StockMoveResource($stockMove), 'Stock Move retrieved successfully');
     }
 
     /**
      * @param int $id
-     * @param UpdateWarehouseAPIRequest $request
+     * @param UpdateStockMoveAPIRequest $request
      * @return Response
      *
      * @SWG\Put(
-     *      path="/warehouses/{id}",
-     *      summary="Update the specified Warehouse in storage",
-     *      tags={"Warehouse"},
-     *      description="Update Warehouse",
+     *      path="/stockMoves/{id}",
+     *      summary="Update the specified StockMove in storage",
+     *      tags={"StockMove"},
+     *      description="Update StockMove",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="id",
-     *          description="id of Warehouse",
+     *          description="id of StockMove",
      *          type="integer",
      *          required=true,
      *          in="path"
@@ -187,9 +189,9 @@ class WarehouseAPIController extends AppBaseController
      *      @SWG\Parameter(
      *          name="body",
      *          in="body",
-     *          description="Warehouse that should be updated",
+     *          description="StockMove that should be updated",
      *          required=false,
-     *          @SWG\Schema(ref="#/definitions/Warehouse")
+     *          @SWG\Schema(ref="#/definitions/StockMove")
      *      ),
      *      @SWG\Response(
      *          response=200,
@@ -202,7 +204,7 @@ class WarehouseAPIController extends AppBaseController
      *              ),
      *              @SWG\Property(
      *                  property="data",
-     *                  ref="#/definitions/Warehouse"
+     *                  ref="#/definitions/StockMove"
      *              ),
      *              @SWG\Property(
      *                  property="message",
@@ -212,20 +214,20 @@ class WarehouseAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateWarehouseAPIRequest $request)
+    public function update($id, UpdateStockMoveAPIRequest $request)
     {
         $input = $request->all();
 
-        /** @var Warehouse $warehouse */
-        $warehouse = $this->warehouseRepository->find($id);
+        /** @var StockMove $stockMove */
+        $stockMove = $this->transferInWHRepository->find($id);
 
-        if (empty($warehouse)) {
-            return $this->sendError('Warehouse not found');
+        if (empty($stockMove)) {
+            return $this->sendError('Stock Move not found');
         }
 
-        $warehouse = $this->warehouseRepository->update($input, $id);
+        $stockMove = $this->transferInWHRepository->update($input, $id);
 
-        return $this->sendResponse(new WarehouseResource($warehouse), 'Warehouse updated successfully');
+        return $this->sendResponse(new StockMoveResource($stockMove), 'StockMove updated successfully');
     }
 
     /**
@@ -233,14 +235,14 @@ class WarehouseAPIController extends AppBaseController
      * @return Response
      *
      * @SWG\Delete(
-     *      path="/warehouses/{id}",
-     *      summary="Remove the specified Warehouse from storage",
-     *      tags={"Warehouse"},
-     *      description="Delete Warehouse",
+     *      path="/stockMoves/{id}",
+     *      summary="Remove the specified StockMove from storage",
+     *      tags={"StockMove"},
+     *      description="Delete StockMove",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="id",
-     *          description="id of Warehouse",
+     *          description="id of StockMove",
      *          type="integer",
      *          required=true,
      *          in="path"
@@ -268,15 +270,35 @@ class WarehouseAPIController extends AppBaseController
      */
     public function destroy($id)
     {
-        /** @var Warehouse $warehouse */
-        $warehouse = $this->warehouseRepository->find($id);
+        /** @var StockMove $stockMove */
+        $stockMove = $this->transferInWHRepository->find($id);
 
-        if (empty($warehouse)) {
-            return $this->sendError('Warehouse not found');
+        if (empty($stockMove)) {
+            return $this->sendError('Stock Move not found');
         }
 
-        $warehouse->delete();
+        $stockMove->delete();
 
-        return $this->sendSuccess('Warehouse deleted successfully');
+        return $this->sendSuccess('Stock Move deleted successfully');
+    }
+
+    /** get list product send to currentWarehouse from originWarehouse */
+    public function getListTransferProduct(){        
+        $currentWarehouse = request()->get('currentWarehouse');
+        $originWarehouse = request()->get('originWarehouse');
+        if(empty($currentWarehouse)){
+            throw ValidationException::withMessages([
+                'currentWarehouse' => 'Current Warehouse is required'
+            ]);
+        }
+
+        if(empty($originWarehouse)){
+            throw ValidationException::withMessages([
+                'originWarehouse' => 'Origin Warehouse is required'
+            ]);
+        }
+        $withProduct = true;
+        $detail = (new StockMoveLine())->listTransferInWH($currentWarehouse, $originWarehouse, $withProduct);
+        return $this->sendResponse($detail, 'success');
     }
 }
