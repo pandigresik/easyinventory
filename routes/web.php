@@ -55,6 +55,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('stockMoveLines/{productId}/{storageLocationId}', [App\Http\Controllers\Inventory\StockMoveLineController::class, 'index'])->name('inventory.stockMoveLines.product');
         Route::resource('stockAdjustments', Inventory\StockAdjustmentController::class, ["as" => 'inventory'])->middleware(['easyauth']);
         Route::resource('stockAdjustmentLines', Inventory\StockAdjustmentLineController::class, ["as" => 'inventory']);
+
+        Route::get('qrcode', [\App\Http\Controllers\Inventory\QRController::class, 'index'])->name('inventory.qrcode');
     });
     Route::get('/selectAjax', [App\Http\Controllers\SelectAjaxController::class, 'index'])->name('selectAjax');
 //    Route::get('/events', [App\Http\Controllers\EventsController::class, 'index'])->name('events.index');
